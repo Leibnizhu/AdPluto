@@ -1,0 +1,19 @@
+#filter class/binary file
+/build/
+/target/
+/bin/
+
+# filter eclipse file
+*.classpath
+*.project
+/.settings/
+
+# filter IntelliJ IDEA file
+*.iml
+/.idea/
+
+#filter temp file
+*.tmp
+/~$*
+.~*
+*.log
