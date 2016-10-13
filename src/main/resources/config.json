@@ -1,0 +1,41 @@
+{
+	"basic": {
+		"totaluv": 1000,//需要投放的总UV数（广告主监测到的）
+		"advertiserpvuv": 2,//广告主监测到的PV和UV的比值
+		"dsppvclick": 10//DSP端增加的PV和点击数的比值（注，DSP端监测到的点击相当于广告主网站监测到的PV）
+	},
+	"url":[ //要刷的广告主落地页，包括宏
+		"http://www.sonystyle.com.cn/products/hi_res_audio/201606/index.htm?cid=Bidding_10008_{width}x{height}_{ctid}_60_HiRes_160701",
+		"http://www.sonystyle.com.cn/products/hi_res_audio/201606/index.htm?cid=Bidding_10008_{width}x{height}_{ctid}_60_HiRes_160702"
+	],
+	"size": [ //尺寸
+		{
+			"width": 640,
+			"height": 100
+		},
+		{
+			"width": 480,
+			"height": 320
+		},
+		{
+			"width": 300,
+			"height": 250
+		}
+	],
+	"creativepkgid": [ //创意包ID
+		"123",
+		"456",
+		"789"
+	],
+	"channelid": [ //渠道ID
+		"321",
+		"654",
+		"987"
+	],
+	"adzoneid": [  //广告位ID
+		"sadf",
+		"lkjh",
+		"qwer",
+		"poiu"
+	],
+}
