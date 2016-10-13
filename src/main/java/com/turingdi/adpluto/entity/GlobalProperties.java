@@ -20,14 +20,13 @@ public class GlobalProperties {
 	private String[] channelid;// 渠道ID
 	private String[] adzoneid; // 广告位ID
 	
-	private static GlobalProperties globalProps = loadJSON();
+	private static GlobalProperties globalProps;
 	
-	private static GlobalProperties loadJSON(){
+	static{
 		InputStream is = null;
-		GlobalProperties globalProp = null;
 		try{
 			is = new BufferedInputStream(GlobalProperties.class.getResourceAsStream("/config.json"));
-			globalProp = JSON.parseObject(is, GlobalProperties.class);
+			globalProps = JSON.parseObject(is, GlobalProperties.class);
 		} catch(Exception e){
 			
 		} finally {
@@ -39,7 +38,6 @@ public class GlobalProperties {
 				}
 			}
 		}
-		return globalProp;
 	}
 	
 	/**
