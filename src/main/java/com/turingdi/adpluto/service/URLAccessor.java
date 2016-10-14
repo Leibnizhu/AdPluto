@@ -28,15 +28,16 @@ public class URLAccessor {
 
     public void accessURL(String clickURL, Random rand) {
         try {
+            //创建一个CHROME浏览器Client
             WebClient webClient = new WebClient(BrowserVersion.CHROME);
             //设置webClient的相关参数
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             webClient.getOptions().setJavaScriptEnabled(true);
-            webClient.getOptions().setCssEnabled(false);
+            webClient.getOptions().setCssEnabled(false);//不加载CSS，提高解析速度
             webClient.getOptions().setTimeout(35000);
             webClient.getOptions().setThrowExceptionOnScriptError(false);
-            //按指定的比例，获取一个随机的旧的Cookie进行访问
-            if (rand.nextFloat() > 1 / GlobalProperties.getGlobalProps().getBasic().getAdvertiserpvuv()) {
+            //按指定的比例，从Cookie存储对象中随机获取一个的旧的Cookie进行访问
+            if (rand.nextFloat() > 1 / GlobalProperties.getGlobalProps().getBasic().getAdvPVAdvUV()) {
                 Set<Cookie> sendCookie = CookiesStorer.getInstance().getRandomCookieSet();
                 if(null != sendCookie){
                     for(Cookie cookie : sendCookie){
@@ -48,7 +49,7 @@ public class URLAccessor {
             HtmlPage page= webClient.getPage(clickURL);
             System.out.println(page.getTitleText());
 
-            // 取得cookie放入
+            // 取得cookie放入Cookie存储对象中
             Set<Cookie> receiveCookie = webClient.getCookieManager().getCookies();
             CookiesStorer.getInstance().addCookie(receiveCookie);
         } catch (IOException e) {
