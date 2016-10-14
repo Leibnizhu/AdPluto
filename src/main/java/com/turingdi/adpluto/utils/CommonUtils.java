@@ -35,8 +35,12 @@ public class CommonUtils {
 	 * 宏替换，来源域名ID
 	 */
 	public static final String REF_DOMAIN_ID = "{refh}";
+	/**
+	 * 宏替换，人群标签
+	 */
+	public static final String TAG_ID = "{tag}";
 
-	public static String microReplace(String url, String adxId, Size size, String crtvPkgId, String adzoneId) {
+	public static String microReplace(String url, String adxId, Size size, String crtvPkgId, String adzoneId, String tag) {
 		StringBuffer sb = new StringBuffer(url);
 		CommonUtils.replaceStringBuffer(sb, ADX_ID, adxId);
 		//CommonUtils.replaceStringBuffer(sb, CAMP_ID, campid);
@@ -44,6 +48,7 @@ public class CommonUtils {
 		CommonUtils.replaceStringBuffer(sb, WIDTH, size.getWidth());
 		CommonUtils.replaceStringBuffer(sb, HEIGHT, size.getHeight());
 		CommonUtils.replaceStringBuffer(sb, CT_ID, crtvPkgId);
+		CommonUtils.replaceStringBuffer(sb, TAG_ID, tag);
 		//CommonUtils.replaceStringBuffer(sb, REF_DOMAIN_ID, refsizeid));
 		return sb.toString();
 	}

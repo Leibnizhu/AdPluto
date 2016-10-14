@@ -3,7 +3,7 @@
 		"totaluv": 10, //需要投放的总UV数（广告主监测到的）
 		"advPVAdvUV": 2, //Adobe监测到的PV和UV的比值
 		"dspClickAdvUV":2.5, //DSP端增加的点击与Adobe监测的UV的比值
-		"dspImpAdvUV": 10 //DSP端增加的曝光量和Adobe监测UV的比值
+		"dspImpAdvUV": 4 //DSP端增加的曝光量和Adobe监测UV的比值
 		//例，以上4个参数分别为100,2,2.5,3的时候:
 		//会在Adobe上总共刷100个UV，100*2=200个PV
 		//在我们DSP上刷100×2.5=250个点击，100*3=300个展示
