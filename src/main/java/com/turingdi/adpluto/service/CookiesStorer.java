@@ -8,11 +8,12 @@ import java.util.Random;
 import java.util.Set;
 
 /**
+ * 存储Cookie
+ *
  * Created by leibniz on 16-10-13.
  */
-public class CookiesStorer {
+class CookiesStorer {
     private static CookiesStorer INSTANCE = new CookiesStorer();
-    private static final Set<String> cookiesStrSet = new HashSet<String>();
     private static final Set<Set<Cookie>> cookiesSetSet = new HashSet<>();
 
     private CookiesStorer() {
@@ -20,10 +21,6 @@ public class CookiesStorer {
 
     public static CookiesStorer getInstance() {
         return INSTANCE;
-    }
-
-    public String getRandomCookieStr() {
-        return getRandomElemmentFromSet(cookiesStrSet);
     }
 
     public Set<Cookie> getRandomCookieSet() {
@@ -43,11 +40,6 @@ public class CookiesStorer {
             i++;
         }
         return null;
-    }
-
-    public void addCookie(String cookie) {
-        cookiesStrSet.add(cookie);
-        //Log4jUtils.getLogger().debug(cookiesStrSet);
     }
 
     public void addCookie(Set<Cookie> cookies) {

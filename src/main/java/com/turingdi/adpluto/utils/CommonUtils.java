@@ -1,6 +1,7 @@
 package com.turingdi.adpluto.utils;
 
 import com.turingdi.adpluto.entity.GlobalProperties.Size;
+import com.turingdi.adpluto.entity.RequestParams;
 
 public class CommonUtils {
 
@@ -40,15 +41,15 @@ public class CommonUtils {
      */
     public static final String TAG_ID = "{tag}";
 
-    public static String microReplace(String url, String adxId, Size size, String crtvPkgId, String adzoneId, String tag) {
-        StringBuffer sb = new StringBuffer(url);
-        CommonUtils.replaceStringBuffer(sb, ADX_ID, adxId);
+    public static String microReplace(RequestParams req) {
+        StringBuffer sb = new StringBuffer(req.getClickURL());
+        CommonUtils.replaceStringBuffer(sb, ADX_ID, req.getAdxId());
         //CommonUtils.replaceStringBuffer(sb, CAMP_ID, campid);
-        CommonUtils.replaceStringBuffer(sb, ADZONE_ID, adzoneId);
-        CommonUtils.replaceStringBuffer(sb, WIDTH, size.getWidth());
-        CommonUtils.replaceStringBuffer(sb, HEIGHT, size.getHeight());
-        CommonUtils.replaceStringBuffer(sb, CT_ID, crtvPkgId);
-        CommonUtils.replaceStringBuffer(sb, TAG_ID, tag);
+        CommonUtils.replaceStringBuffer(sb, ADZONE_ID, req.getAdzoneId());
+        CommonUtils.replaceStringBuffer(sb, WIDTH, req.getSize().getWidth());
+        CommonUtils.replaceStringBuffer(sb, HEIGHT, req.getSize().getHeight());
+        CommonUtils.replaceStringBuffer(sb, CT_ID, req.getCrtvPkgId());
+        CommonUtils.replaceStringBuffer(sb, TAG_ID, req.getTag());
         //CommonUtils.replaceStringBuffer(sb, REF_DOMAIN_ID, refsizeid));
         return sb.toString();
     }

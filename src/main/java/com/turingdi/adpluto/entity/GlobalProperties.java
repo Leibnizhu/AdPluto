@@ -17,6 +17,7 @@ public class GlobalProperties {
     private Basic basic;// 基本配置
     private String[] url;//要刷的广告主落地页，包括宏
     private Size[] size;// 尺寸
+    private String[] campid;//活动ID
     private String[] ctid;// 创意包ID
     private String[] adxid;// 渠道ID
     private String[] spotid; // 广告位ID
@@ -50,9 +51,9 @@ public class GlobalProperties {
 
     public static class Basic {
         private int totaluv;// 需要投放的总UV数（广告主监测到的）
-        private float advPVAdvUV;// Adobe监测到的PV和UV的比值
-        private float dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
-        private float dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
+        private double advPVAdvUV;// Adobe监测到的PV和UV的比值
+        private double dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
+        private double dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
 
         @Override
         public String toString() {
@@ -73,29 +74,29 @@ public class GlobalProperties {
             return this;
         }
 
-        public float getAdvPVAdvUV() {
+        public double getAdvPVAdvUV() {
             return advPVAdvUV;
         }
 
-        public Basic setAdvPVAdvUV(float advPVAdvUV) {
+        public Basic setAdvPVAdvUV(double advPVAdvUV) {
             this.advPVAdvUV = advPVAdvUV;
             return this;
         }
 
-        public float getDspClickAdvUV() {
+        public double getDspClickAdvUV() {
             return dspClickAdvUV;
         }
 
-        public Basic setDspClickAdvUV(float dspClickAdvUV) {
+        public Basic setDspClickAdvUV(double dspClickAdvUV) {
             this.dspClickAdvUV = dspClickAdvUV;
             return this;
         }
 
-        public float getDspImpAdvUV() {
+        public double getDspImpAdvUV() {
             return dspImpAdvUV;
         }
 
-        public Basic setDspImpAdvUV(float dspImpAdvUV) {
+        public Basic setDspImpAdvUV(double dspImpAdvUV) {
             this.dspImpAdvUV = dspImpAdvUV;
             return this;
         }
@@ -107,7 +108,7 @@ public class GlobalProperties {
 
         @Override
         public String toString() {
-            return "Size [width=" + width + ", height=" + height + "]";
+            return width + "x" + height;
         }
 
         /**
@@ -228,6 +229,15 @@ public class GlobalProperties {
                 ", tag=" + Arrays.toString(tag) +
                 ", mysql=" + mysql +
                 '}';
+    }
+
+    public String[] getCampid() {
+        return campid;
+    }
+
+    public GlobalProperties setCampid(String[] campid) {
+        this.campid = campid;
+        return this;
     }
 
     public Basic getBasic() {

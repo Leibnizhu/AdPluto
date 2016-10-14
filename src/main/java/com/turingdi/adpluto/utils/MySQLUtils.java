@@ -35,6 +35,19 @@ public class MySQLUtils {
         return conn;
     }
 
+    public static void closeResources(AutoCloseable... resources) {
+        for(AutoCloseable resource : resources){
+            closeAutoClosableResource(resource);
+        }
+    }
+
+    private static void closeAutoClosableResource(AutoCloseable resource) {
+        if (null != resource) try {
+            resource.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void closePool() {
         if (null != cpds) {

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.turingdi.adpluto.entity.GlobalProperties;
 import com.turingdi.adpluto.entity.GlobalProperties.Size;
+import com.turingdi.adpluto.entity.RequestParams;
 import com.turingdi.adpluto.service.DatabaseAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.CommonUtils;
@@ -23,22 +24,29 @@ public class AdPlutoStarter {
         int clkCount = 0; //统计当前执行了多少次广告主落地页的PV
         int totalPV = (int) (props.getBasic().getTotaluv() * props.getBasic().getAdvPVAdvUV());
         Random rand = new Random(System.currentTimeMillis());
-        while (clkCount < totalPV) { //需要触发的点击次数
-            //遍历所有可能的宏替换排列组合
+        //遍历所有可能的宏替换排列组合
+        while (clkCount < totalPV) {
             for (String adxId : props.getAdxid()) {
                 for (Size size : props.getSize()) {
-                    for (String crtvPkgId : props.getCtid()) {
-                        for (String adzoneId : props.getSpotid()) {
-                            for (String tag : props.getTag()) {
-                                for (String clickURL : props.getUrl()) {
-                                    //URL宏替换
-                                    clickURL = CommonUtils.microReplace(clickURL, adxId, size, crtvPkgId, adzoneId, tag);
-                                    Log4jUtils.getLogger().debug(clickURL);
-                                    //构造Cookie，访问URL
-                                    URLAccessor.getInstance().accessURL(clickURL, rand);
-                                    //写入扒数平台的MySQL
-                                    DatabaseAccessor.getInstance().incrDataBase();
-                                    clkCount++;
+                    for (String campid : props.getCampid()) {
+                        for (String crtvPkgId : props.getCtid()) {
+                            for (String adzoneId : props.getSpotid()) {
+                                for (String tag : props.getTag()) {
+                                    for (String clickURL : props.getUrl()) {
+                                        //URL宏替换
+                                        RequestParams req = new RequestParams(clickURL, adxId, size, crtvPkgId, campid, adzoneId, tag);
+                                        clickURL = CommonUtils.microReplace(req);
+                                        Log4jUtils.getLogger().debug(clickURL);
+                                        //按指定的PVUV比例访问URL
+                                        //URLAccessor.getInstance().accessURL(clickURL, rand);
+                                        //写入扒数平台的MySQL
+                                        DatabaseAccessor.getInstance().incrDataBase(req);
+                                        clkCount++;
+                                        //需要触发的点击次数
+                                        if (clkCount >= totalPV) {
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }
