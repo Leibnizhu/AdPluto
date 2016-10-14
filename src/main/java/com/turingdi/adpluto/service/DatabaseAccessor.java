@@ -42,7 +42,7 @@ public class DatabaseAccessor {
             String sql = "INSERT INTO adpluto_rpt_detail (rpt_date, iddsp, campid, ctid, size, tag, pv, click) VALUES (DATE(?),?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE pv=pv+?, click=click+?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, date);
-            stmt.setString(2, req.getAdxId());
+            stmt.setString(2, req.getMysqlAdxId());
             stmt.setString(3, req.getCampid());
             stmt.setString(4, req.getCrtvPkgId());
             stmt.setString(5, req.getSize().toString());
@@ -69,7 +69,7 @@ public class DatabaseAccessor {
             String sql = "INSERT INTO adpluto_rpt (rpt_date, iddsp, campid, pv, click) VALUES (DATE(?),?,?,?,?) ON DUPLICATE KEY UPDATE pv=pv+?, click=click+?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, date);
-            stmt.setString(2, req.getAdxId());
+            stmt.setString(2, req.getMysqlAdxId());
             stmt.setString(3, req.getCampid());
             stmt.setInt(4, addPV);
             stmt.setInt(5, addClick);

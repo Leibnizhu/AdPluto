@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.turingdi.adpluto.utils.Log4jUtils;
@@ -149,6 +150,7 @@ public class GlobalProperties {
         private String password;//密码
         private int initConns;//连接池初始化连接数
         private int maxConns;//连接池最大连接数
+        private Map<String, String> adxidMapping;//DSP业务平台中的ADX ID和扒数平台中ADX ID的映射关系
 
         @Override
         public String toString() {
@@ -160,6 +162,15 @@ public class GlobalProperties {
                     ", initConns=" + initConns +
                     ", maxConns=" + maxConns +
                     '}';
+        }
+
+        public Map<String, String> getAdxidMapping() {
+            return adxidMapping;
+        }
+
+        public Mysql setAdxidMapping(Map<String, String> adxidMapping) {
+            this.adxidMapping = adxidMapping;
+            return this;
         }
 
         public String getJDBCDriver() {

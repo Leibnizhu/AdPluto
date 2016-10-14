@@ -63,6 +63,11 @@
     "userId": "root",
     "password": "turingdi",
     "initConns": 10,
-    "maxConns": 100
+    "maxConns": 100,
+    "adxidMapping":{
+      //DSP业务平台中的ADX ID和扒数平台中ADX ID的映射关系
+      "1":"9",
+      "2":"10"
+    }
   }
 }
