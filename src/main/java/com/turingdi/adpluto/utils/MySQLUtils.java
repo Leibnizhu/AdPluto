@@ -37,7 +37,7 @@ public class MySQLUtils {
 
 
     public static void closePool() {
-        if(null != cpds){
+        if (null != cpds) {
             cpds.close();
         }
     }
