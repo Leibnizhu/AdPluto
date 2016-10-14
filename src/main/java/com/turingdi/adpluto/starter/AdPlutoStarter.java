@@ -8,11 +8,14 @@ import com.turingdi.adpluto.service.DatabaseAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
+import com.turingdi.adpluto.utils.MySQLUtils;
 
 public class AdPlutoStarter {
 	public static void main(String[] args){
-		Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());
-		new  AdPlutoStarter().startCheater();
+		Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());//初始化基本配置
+		MySQLUtils.initMySQLPool();//初始化MySQL连接池
+		new  AdPlutoStarter().startCheater();//启动作弊器
+		MySQLUtils.closePool();//关闭MySQL连接池
 	}
 
 	private void startCheater() {

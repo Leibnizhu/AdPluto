@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import com.alibaba.fastjson.JSON;
+import com.turingdi.adpluto.utils.Log4jUtils;
 
 /**
  * 保存用于刷流量的全局配置
@@ -19,6 +20,7 @@ public class GlobalProperties {
 	private String[] creativepkgid;// 创意包ID
 	private String[] channelid;// 渠道ID
 	private String[] adzoneid; // 广告位ID
+	private Mysql mysql;//MySQL配置
 	
 	private static GlobalProperties globalProps;
 	
@@ -27,15 +29,13 @@ public class GlobalProperties {
 		try{
 			is = new BufferedInputStream(GlobalProperties.class.getResourceAsStream("/config.json"));
 			globalProps = JSON.parseObject(is, GlobalProperties.class);
-		} catch(Exception e){
-			
+		} catch(IOException e){
+			Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
 		} finally {
-			if(null != is ){
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			if(null != is ) try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -148,11 +148,76 @@ public class GlobalProperties {
 		}
 	}
 
+	public static class Mysql{
+		private String JDBCDriver; //驱动类名
+		private String url;//MySQL数据库地址
+		private String userId;//用户名
+		private String password;//密码
+		private int initConns;//连接池初始化连接数
+		private int maxConns;//连接池最大连接数
+
+		public String getJDBCDriver() {
+			return JDBCDriver;
+		}
+
+		public void setJDBCDriver(String JDBCDriver) {
+			this.JDBCDriver = JDBCDriver;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		public String getPassword() {
+			return password;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
+		public int getInitConns() {
+			return initConns;
+		}
+
+		public void setInitConns(int initConns) {
+			this.initConns = initConns;
+		}
+
+		public int getMaxConns() {
+			return maxConns;
+		}
+
+		public void setMaxConns(int maxConns) {
+			this.maxConns = maxConns;
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "GlobalProperties [basic=" + basic + ", url=" + Arrays.toString(url) + ", size=" + Arrays
 				.toString(size) + ", creativepkgid=" + Arrays.toString(creativepkgid) + ", channelid=" + Arrays
 						.toString(channelid) + ", adzoneid=" + Arrays.toString(adzoneid) + "]";
+	}
+
+	public Mysql getMysql() {
+		return mysql;
+	}
+
+	public void setMysql(Mysql mysql) {
+		this.mysql = mysql;
 	}
 
 	/**
