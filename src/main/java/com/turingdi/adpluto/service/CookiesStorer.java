@@ -30,14 +30,14 @@ public class CookiesStorer {
         return getRandomElemmentFromSet(cookiesSetSet);
     }
 
-    private <T> T getRandomElemmentFromSet(Set<T> elementSet){
-        if(elementSet.size() <=0 ){
+    private <T> T getRandomElemmentFromSet(Set<T> elementSet) {
+        if (elementSet.size() <= 0) {
             return null;
         }
         int randIndex = new Random(System.currentTimeMillis()).nextInt(elementSet.size());
         int i = 0;
-        for(T element : elementSet){
-            if(i == randIndex){
+        for (T element : elementSet) {
+            if (i == randIndex) {
                 return element;
             }
             i++;

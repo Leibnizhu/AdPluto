@@ -39,14 +39,14 @@ public class URLAccessor {
             //按指定的比例，从Cookie存储对象中随机获取一个的旧的Cookie进行访问
             if (rand.nextFloat() > 1 / GlobalProperties.getGlobalProps().getBasic().getAdvPVAdvUV()) {
                 Set<Cookie> sendCookie = CookiesStorer.getInstance().getRandomCookieSet();
-                if(null != sendCookie){
-                    for(Cookie cookie : sendCookie){
+                if (null != sendCookie) {
+                    for (Cookie cookie : sendCookie) {
                         webClient.getCookieManager().addCookie(cookie);
                     }
                 }
             }
             //模拟浏览器打开一个目标网址
-            HtmlPage page= webClient.getPage(clickURL);
+            HtmlPage page = webClient.getPage(clickURL);
             System.out.println(page.getTitleText());
 
             // 取得cookie放入Cookie存储对象中
