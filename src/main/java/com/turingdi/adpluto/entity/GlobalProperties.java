@@ -17,9 +17,10 @@ public class GlobalProperties {
 	private Basic basic;// 基本配置
 	private String[] url;//要刷的广告主落地页，包括宏
 	private Size[] size;// 尺寸
-	private String[] creativepkgid;// 创意包ID
-	private String[] channelid;// 渠道ID
-	private String[] adzoneid; // 广告位ID
+	private String[] ctid;// 创意包ID
+	private String[] adxid;// 渠道ID
+	private String[] spotid; // 广告位ID
+	private String[] tag;// 人群标签
 	private Mysql mysql;//MySQL配置
 	
 	private static GlobalProperties globalProps;
@@ -49,59 +50,53 @@ public class GlobalProperties {
 
 	public static class Basic {
 		private int totaluv;// 需要投放的总UV数（广告主监测到的）
-		private float advertiserpvuv;// 广告主监测到的PV和UV的比值
-		private float dsppvclick;// DSP端增加的PV和点击数的比值（注，DSP端监测到的点击相当于广告主网站监测到的PV）
+		private float advPVAdvUV;// Adobe监测到的PV和UV的比值
+		private float dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
+		private float dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
 
 		@Override
 		public String toString() {
-			return "Basic [totaluv=" + totaluv + ", advertiserpvuv=" + advertiserpvuv + ", dsppvclick=" + dsppvclick + "]";
+			return "Basic{" +
+					"totaluv=" + totaluv +
+					", advPVAdvUV=" + advPVAdvUV +
+					", dspClickAdvUV=" + dspClickAdvUV +
+					", dspImpAdvUV=" + dspImpAdvUV +
+					'}';
 		}
 
-		/**
-		 * @return the totaluv
-		 */
 		public int getTotaluv() {
 			return totaluv;
 		}
 
-		/**
-		 * @param totaluv
-		 *            the totaluv to set
-		 */
 		public Basic setTotaluv(int totaluv) {
 			this.totaluv = totaluv;
 			return this;
 		}
 
-		/**
-		 * @return the advertiserpvuv
-		 */
-		public float getAdvertiserpvuv() {
-			return advertiserpvuv;
+		public float getAdvPVAdvUV() {
+			return advPVAdvUV;
 		}
 
-		/**
-		 * @param advertiserpvuv
-		 *            the advertiserpvuv to set
-		 */
-		public Basic setAdvertiserpvuv(float advertiserpvuv) {
-			this.advertiserpvuv = advertiserpvuv;
+		public Basic setAdvPVAdvUV(float advPVAdvUV) {
+			this.advPVAdvUV = advPVAdvUV;
 			return this;
 		}
 
-		/**
-		 * @return the dsppvclick
-		 */
-		public float getDsppvclick() {
-			return dsppvclick;
+		public float getDspClickAdvUV() {
+			return dspClickAdvUV;
 		}
 
-		/**
-		 * @param dsppvclick
-		 *            the dsppvclick to set
-		 */
-		public Basic setDsppvclick(float dsppvclick) {
-			this.dsppvclick = dsppvclick;
+		public Basic setDspClickAdvUV(float dspClickAdvUV) {
+			this.dspClickAdvUV = dspClickAdvUV;
+			return this;
+		}
+
+		public float getDspImpAdvUV() {
+			return dspImpAdvUV;
+		}
+
+		public Basic setDspImpAdvUV(float dspImpAdvUV) {
+			this.dspImpAdvUV = dspImpAdvUV;
 			return this;
 		}
 	}
@@ -156,162 +151,156 @@ public class GlobalProperties {
 		private int initConns;//连接池初始化连接数
 		private int maxConns;//连接池最大连接数
 
+		@Override
+		public String toString() {
+			return "Mysql{" +
+					"JDBCDriver='" + JDBCDriver + '\'' +
+					", url='" + url + '\'' +
+					", userId='" + userId + '\'' +
+					", password='" + password + '\'' +
+					", initConns=" + initConns +
+					", maxConns=" + maxConns +
+					'}';
+		}
+
 		public String getJDBCDriver() {
 			return JDBCDriver;
 		}
 
-		public void setJDBCDriver(String JDBCDriver) {
+		public Mysql setJDBCDriver(String JDBCDriver) {
 			this.JDBCDriver = JDBCDriver;
+			return this;
 		}
 
 		public String getUrl() {
 			return url;
 		}
 
-		public void setUrl(String url) {
+		public Mysql setUrl(String url) {
 			this.url = url;
+			return this;
 		}
 
 		public String getUserId() {
 			return userId;
 		}
 
-		public void setUserId(String userId) {
+		public Mysql setUserId(String userId) {
 			this.userId = userId;
+			return this;
 		}
 
 		public String getPassword() {
 			return password;
 		}
 
-		public void setPassword(String password) {
+		public Mysql setPassword(String password) {
 			this.password = password;
+			return this;
 		}
 
 		public int getInitConns() {
 			return initConns;
 		}
 
-		public void setInitConns(int initConns) {
+		public Mysql setInitConns(int initConns) {
 			this.initConns = initConns;
+			return this;
 		}
 
 		public int getMaxConns() {
 			return maxConns;
 		}
 
-		public void setMaxConns(int maxConns) {
+		public Mysql setMaxConns(int maxConns) {
 			this.maxConns = maxConns;
+			return this;
 		}
 	}
 
 	@Override
 	public String toString() {
-		return "GlobalProperties [basic=" + basic + ", url=" + Arrays.toString(url) + ", size=" + Arrays
-				.toString(size) + ", creativepkgid=" + Arrays.toString(creativepkgid) + ", channelid=" + Arrays
-						.toString(channelid) + ", adzoneid=" + Arrays.toString(adzoneid) + "]";
+		return "GlobalProperties{" +
+				"basic=" + basic +
+				", url=" + Arrays.toString(url) +
+				", size=" + Arrays.toString(size) +
+				", ctid=" + Arrays.toString(ctid) +
+				", adxid=" + Arrays.toString(adxid) +
+				", spotid=" + Arrays.toString(spotid) +
+				", tag=" + Arrays.toString(tag) +
+				", mysql=" + mysql +
+				'}';
+	}
+
+	public Basic getBasic() {
+		return basic;
+	}
+
+	public GlobalProperties setBasic(Basic basic) {
+		this.basic = basic;
+		return this;
+	}
+
+	public String[] getUrl() {
+		return url;
+	}
+
+	public GlobalProperties setUrl(String[] url) {
+		this.url = url;
+		return this;
+	}
+
+	public Size[] getSize() {
+		return size;
+	}
+
+	public GlobalProperties setSize(Size[] size) {
+		this.size = size;
+		return this;
+	}
+
+	public String[] getCtid() {
+		return ctid;
+	}
+
+	public GlobalProperties setCtid(String[] ctid) {
+		this.ctid = ctid;
+		return this;
+	}
+
+	public String[] getAdxid() {
+		return adxid;
+	}
+
+	public GlobalProperties setAdxid(String[] adxid) {
+		this.adxid = adxid;
+		return this;
+	}
+
+	public String[] getSpotid() {
+		return spotid;
+	}
+
+	public GlobalProperties setSpotid(String[] spotid) {
+		this.spotid = spotid;
+		return this;
+	}
+
+	public String[] getTag() {
+		return tag;
+	}
+
+	public GlobalProperties setTag(String[] tag) {
+		this.tag = tag;
+		return this;
 	}
 
 	public Mysql getMysql() {
 		return mysql;
 	}
 
-	public void setMysql(Mysql mysql) {
+	public GlobalProperties setMysql(Mysql mysql) {
 		this.mysql = mysql;
-	}
-
-	/**
-	 * @return the url
-	 */
-	public String[] getUrl() {
-		return url;
-	}
-
-	/**
-	 * @param url the url to set
-	 */
-	public GlobalProperties setUrl(String[] url) {
-		this.url = url;
-		return this;
-	}
-
-	/**
-	 * @return the basic
-	 */
-	public Basic getBasic() {
-		return basic;
-	}
-
-	/**
-	 * @param basic
-	 *            the basic to set
-	 */
-	public GlobalProperties setBasic(Basic basic) {
-		this.basic = basic;
-		return this;
-	}
-
-	/**
-	 * @return the size
-	 */
-	public Size[] getSize() {
-		return size;
-	}
-
-	/**
-	 * @param size
-	 *            the size to set
-	 */
-	public GlobalProperties setSize(Size[] size) {
-		this.size = size;
-		return this;
-	}
-
-	/**
-	 * @return the creativepkgid
-	 */
-	public String[] getCreativepkgid() {
-		return creativepkgid;
-	}
-
-	/**
-	 * @param creativepkgid
-	 *            the creativepkgid to set
-	 */
-	public GlobalProperties setCreativepkgid(String[] creativepkgid) {
-		this.creativepkgid = creativepkgid;
-		return this;
-	}
-
-	/**
-	 * @return the channelid
-	 */
-	public String[] getChannelid() {
-		return channelid;
-	}
-
-	/**
-	 * @param channelid
-	 *            the channelid to set
-	 */
-	public GlobalProperties setChannelid(String[] channelid) {
-		this.channelid = channelid;
-		return this;
-	}
-
-	/**
-	 * @return the adzoneid
-	 */
-	public String[] getAdzoneid() {
-		return adzoneid;
-	}
-
-	/**
-	 * @param adzoneid
-	 *            the adzoneid to set
-	 */
-	public GlobalProperties setAdzoneid(String[] adzoneid) {
-		this.adzoneid = adzoneid;
 		return this;
 	}
 }
