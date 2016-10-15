@@ -18,9 +18,8 @@ public class GlobalProperties {
     private Basic basic;// 基本配置
     private String[] url;//要刷的广告主落地页，包括宏
     private Size[] size;// 尺寸
-    private String[] campid;//活动ID
+    private Campaign[] camp;// 渠道ID
     private String[] ctid;// 创意包ID
-    private String[] adxid;// 渠道ID
     private String[] spotid; // 广告位ID
     private String[] tag;// 人群标签
     private Mysql mysql;//MySQL配置
@@ -143,6 +142,37 @@ public class GlobalProperties {
         }
     }
 
+    public static class Campaign {
+        private String adxid;//渠道ID
+        private String[] campid;//活动ID
+
+        @Override
+        public String toString() {
+            return "Campaign{" +
+                    "adxid='" + adxid + '\'' +
+                    ", campid=" + Arrays.toString(campid) +
+                    '}';
+        }
+
+        public String getAdxid() {
+            return adxid;
+        }
+
+        public Campaign setAdxid(String adxid) {
+            this.adxid = adxid;
+            return this;
+        }
+
+        public String[] getCampid() {
+            return campid;
+        }
+
+        public Campaign setCampid(String[] campid) {
+            this.campid = campid;
+            return this;
+        }
+    }
+
     public static class Mysql {
         private String JDBCDriver; //驱动类名
         private String url;//MySQL数据库地址
@@ -234,21 +264,12 @@ public class GlobalProperties {
                 "basic=" + basic +
                 ", url=" + Arrays.toString(url) +
                 ", size=" + Arrays.toString(size) +
+                ", camp=" + Arrays.toString(camp) +
                 ", ctid=" + Arrays.toString(ctid) +
-                ", adxid=" + Arrays.toString(adxid) +
                 ", spotid=" + Arrays.toString(spotid) +
                 ", tag=" + Arrays.toString(tag) +
                 ", mysql=" + mysql +
                 '}';
-    }
-
-    public String[] getCampid() {
-        return campid;
-    }
-
-    public GlobalProperties setCampid(String[] campid) {
-        this.campid = campid;
-        return this;
     }
 
     public Basic getBasic() {
@@ -287,12 +308,12 @@ public class GlobalProperties {
         return this;
     }
 
-    public String[] getAdxid() {
-        return adxid;
+    public Campaign[] getCamp() {
+        return camp;
     }
 
-    public GlobalProperties setAdxid(String[] adxid) {
-        this.adxid = adxid;
+    public GlobalProperties setCamp(Campaign[] camp) {
+        this.camp = camp;
         return this;
     }
 

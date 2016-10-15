@@ -31,21 +31,29 @@
       "height": 250
     }
   ],
-  "campid":[
-    //图灵DSP平台上的活动ID
-    "111",
-    "111",
-    "222"
+  "camp":[
+    //此处每个记录对应一个渠道，在渠道内再设置这个渠道中所有需要刷的活动
+    {
+      //渠道ID，替换{adxid}，URL中没有这个宏的时候，随意填一个值就行
+      "adxid":"1",
+      "campid":[
+        //图灵DSP平台上，该渠道中的活动ID
+        "111",
+        "112"
+      ]
+    },
+    {
+      "adxid":"2",
+      "campid":[
+        "222",
+        "223"
+      ]
+    }
   ],
   "ctid": [
     //创意包ID，替换{ctid}，URL中没有这个宏的时候，随意填一个值就行
     "123",
     "456"
-  ],
-  "adxid": [
-    //渠道ID，替换{adxid}，URL中没有这个宏的时候，随意填一个值就行
-    "1",
-    "2"
   ],
   "spotid": [
     //广告位ID，替换{spotid}，URL中没有这个宏的时候，随意填一个值就行
@@ -59,7 +67,7 @@
   //数据库配置，请不要修改
   "mysql": {
     "JDBCDriver": "com.mysql.jdbc.Driver",
-    "url": "jdbc:mysql://172.16.99.235:3306/dspmerger?useUnicode=true&characterEncoding=utf8",
+    "url": "jdbc:mysql://leibnizhu.wicp.net:32945/dspmerger?useUnicode=true&characterEncoding=utf8",
     "userId": "root",
     "password": "turingdi",
     "initConns": 10,

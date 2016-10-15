@@ -26,15 +26,15 @@ public class AdPlutoStarter {
         Random rand = new Random(System.currentTimeMillis());
         //遍历所有可能的宏替换排列组合
         while (clkCount < totalPV) {
-            for (String adxId : props.getAdxid()) {
+            for (GlobalProperties.Campaign camp : props.getCamp()) {
                 for (Size size : props.getSize()) {
-                    for (String campid : props.getCampid()) {
+                    for (String campid : camp.getCampid()) {
                         for (String crtvPkgId : props.getCtid()) {
                             for (String adzoneId : props.getSpotid()) {
                                 for (String tag : props.getTag()) {
                                     for (String clickURL : props.getUrl()) {
                                         //URL宏替换
-                                        RequestParams req = new RequestParams(clickURL, adxId, size, crtvPkgId, campid, adzoneId, tag);
+                                        RequestParams req = new RequestParams(clickURL, camp.getAdxid(), size, crtvPkgId, campid, adzoneId, tag);
                                         clickURL = CommonUtils.microReplace(req);
                                         Log4jUtils.getLogger().debug(clickURL);
                                         //按指定的PVUV比例访问URL
