@@ -18,6 +18,8 @@ import com.turingdi.adpluto.utils.Log4jUtils;
 public class URLAccessor {
     //连接重试的次数
     private static final int RETRY_TIMES = 3;
+    //连接重试之前的等待时间，秒
+    private static final int RETRY_SLEEP = 10;
 
     private static URLAccessor INSTANCE = new URLAccessor();
 
@@ -47,10 +49,14 @@ public class URLAccessor {
                 }
             }
         }
-        tryAccessURL(webClient, clickURL, RETRY_TIMES);
+        try {
+            tryAccessURL(webClient, clickURL, RETRY_TIMES);
+        } catch (InterruptedException e) {
+            Log4jUtils.getLogger().error("URL访问重试的线程被中断......", e);
+        }
     }
 
-    private void tryAccessURL(WebClient webClient, String clickURL, int tryCount) {
+    private void tryAccessURL(WebClient webClient, String clickURL, int tryCount) throws InterruptedException {
         try {
             if(tryCount > 0) {
                 //模拟浏览器打开一个目标网址
@@ -62,10 +68,13 @@ public class URLAccessor {
                 CookiesStorer.getInstance().addCookie(receiveCookie);
             }
         } catch (IOException e) {
-            Log4jUtils.getLogger().error("创建访问" + clickURL + "时抛出异常，尝试重连。。。", e);
+            Log4jUtils.getLogger().error("创建访问" + clickURL + "时抛出异常，尝试重连......", e);
+            Thread.sleep(RETRY_SLEEP * 1000);
             tryAccessURL(webClient, clickURL, --tryCount);
         } finally {
-            webClient.close();
+            if(null != webClient){
+                webClient.close();
+            }
         }
     }
 }
