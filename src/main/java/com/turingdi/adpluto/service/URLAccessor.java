@@ -16,14 +16,16 @@ import com.turingdi.adpluto.entity.GlobalProperties;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
 public class URLAccessor {
+    //连接重试的次数
+    private static final int RETRY_TIMES = 3;
 
     private static URLAccessor INSTANCE = new URLAccessor();
 
-    private URLAccessor() {
-    }
-
     public static URLAccessor getInstance() {
         return INSTANCE;
+    }
+
+    private URLAccessor() {
     }
 
     public void accessURL(String clickURL) {
@@ -45,7 +47,7 @@ public class URLAccessor {
                 }
             }
         }
-        tryAccessURL(webClient, clickURL, 3);
+        tryAccessURL(webClient, clickURL, RETRY_TIMES);
     }
 
     private void tryAccessURL(WebClient webClient, String clickURL, int tryCount) {
