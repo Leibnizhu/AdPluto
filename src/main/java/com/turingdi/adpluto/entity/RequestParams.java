@@ -1,5 +1,7 @@
 package com.turingdi.adpluto.entity;
 
+import com.turingdi.adpluto.utils.CommonUtils;
+
 /**
  * 对应
  *
@@ -24,14 +26,16 @@ public class RequestParams {
         this.campid = campid;
         this.adzoneId = adzoneId;
         this.tag = tag;
+        //URL宏替换
+        CommonUtils.microReplace(this);
     }
 
     public String getMysqlAdxId() {
         return mysqlAdxId;
     }
 
-    public void setMysqlAdxId(String mysqlAdxId) {
-        this.mysqlAdxId = mysqlAdxId;
+    public void setClickURL(String clickURL) {
+        this.clickURL = clickURL;
     }
 
     public String getCampid() {
