@@ -78,7 +78,7 @@
   //数据库配置，请不要修改
   "mysql": {
     "JDBCDriver": "com.mysql.jdbc.Driver",
-    "url": "jdbc:mysql://leibnizhu.wicp.net:32945/dspmerger?useUnicode=true&characterEncoding=utf8",
+    "url": "jdbc:mysql://172.16.99.235:3306/dspmerger?useUnicode=true&characterEncoding=utf8",
     "userId": "root",
     "password": "turingdi",
     "initConns": 10,
