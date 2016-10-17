@@ -5,13 +5,13 @@ import com.turingdi.adpluto.entity.GlobalProperties.Size;
 import com.turingdi.adpluto.entity.RequestParams;
 import com.turingdi.adpluto.service.DatabaseAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
-import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 import com.turingdi.adpluto.utils.MySQLUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class AdPlutoStarter {
     //线程池大小
@@ -19,19 +19,20 @@ public class AdPlutoStarter {
     //任务队列最大长度
     private static final int QUEUE_MAX_LENGTH = 100;
     private ExecutorService threadPool;
-    public static final LinkedBlockingQueue<RequestParams> reqQueueStack = new LinkedBlockingQueue<>(QUEUE_MAX_LENGTH);
+    private static final LinkedBlockingQueue<RequestParams> reqQueueStack = new LinkedBlockingQueue<>(QUEUE_MAX_LENGTH);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());//初始化基本配置
         MySQLUtils.initMySQLPool();//初始化MySQL连接池
         AdPlutoStarter starter = new AdPlutoStarter();
         starter.startCheater();//启动作弊器
-        while(!starter.threadPool.isTerminated() || !starter.threadPool.isTerminated()){
+        while(!starter.threadPool.awaitTermination(1, TimeUnit.SECONDS)){
+            Log4jUtils.getLogger().info("等待线程池关闭ing...");
         }
         MySQLUtils.closePool();//关闭MySQL连接池
     }
 
-    private void startCheater() {
+    private void startCheater() throws InterruptedException {
         initThreadPool();//初始化连接池
         GlobalProperties props = GlobalProperties.getGlobalProps();
         int totalPV = (int) (props.getBasic().getTotaluv() * props.getBasic().getAdvPVAdvUV());
@@ -46,7 +47,10 @@ public class AdPlutoStarter {
                                 for (String tag : props.getTag()) {
                                     for (String clickURL : props.getUrl()) {
                                         RequestParams req = new RequestParams(clickURL, camp.getAdxid(), size, crtvPkgId, campid, adzoneId, tag);
-                                        reqQueueStack.offer(req); //将任务压入任务队列
+                                        //将任务压入任务队列
+                                        while(!reqQueueStack.offer(req)){
+                                            Thread.sleep(1000);
+                                        }
                                         //需要触发的点击次数
                                         if (++clkCount >= totalPV) {
                                             return;
@@ -59,6 +63,11 @@ public class AdPlutoStarter {
                 }
             }
         }
+        closeThreadPool();
+    }
+
+    private void closeThreadPool() {
+        threadPool.shutdown();
     }
 
     private void initThreadPool() {
@@ -73,14 +82,12 @@ public class AdPlutoStarter {
 
         @Override
         public void run() {
-            RequestParams req = null;
-            String clickURL = null;
             while(true){
                 // 从队列弹出数据
                 System.out.println("任务队列长度：" + reqQueueStack.size());
                 if (reqQueueStack.size() > 0) {
-                    req = reqQueueStack.poll();
-                    clickURL = req.getClickURL();
+                    RequestParams req = reqQueueStack.poll();
+                    String clickURL = req.getClickURL();
                     Log4jUtils.getLogger().info("实际访问URL：" + clickURL);
                     //按指定的PVUV比例访问URL
                     if(urlAccessor.accessURL(clickURL)){
