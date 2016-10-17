@@ -19,11 +19,11 @@ class CookiesStorer {
     private CookiesStorer() {
     }
 
-    public static CookiesStorer getInstance() {
+    static CookiesStorer getInstance() {
         return INSTANCE;
     }
 
-    public Set<Cookie> getRandomCookieSet() {
+    Set<Cookie> getRandomCookieSet() {
         return getRandomElemmentFromSet(cookiesSetSet);
     }
 
