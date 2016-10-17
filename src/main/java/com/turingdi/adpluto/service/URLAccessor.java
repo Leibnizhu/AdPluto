@@ -1,9 +1,5 @@
 package com.turingdi.adpluto.service;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Random;
 import java.util.Set;
 
@@ -20,27 +16,25 @@ public class URLAccessor {
     private static final int RETRY_TIMES = 3;
     //连接重试之前的等待时间，秒
     private static final int RETRY_SLEEP = 10;
+    //当前URLAccessor对象唯一的一个WebClient
+    private WebClient webClient;
 
-    private static URLAccessor INSTANCE = new URLAccessor();
-
-    public static URLAccessor getInstance() {
-        return INSTANCE;
-    }
-
-    private URLAccessor() {
-    }
-
-    public void accessURL(String clickURL) {
-        Random rand = new Random(System.currentTimeMillis());
+    public URLAccessor() {
         //创建一个CHROME浏览器Client
-        WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        webClient = new WebClient(BrowserVersion.CHROME);
         //设置webClient的相关参数
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setJavaScriptEnabled(true);//必须加载JS，保证监控能够被执行
         webClient.getOptions().setCssEnabled(false);//不加载CSS，提高解析速度
         webClient.getOptions().setTimeout(35000);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
+    }
+
+
+    public boolean accessURL(String clickURL) {
+        Random rand = new Random(System.currentTimeMillis());
         //按指定的比例，从Cookie存储对象中随机获取一个的旧的Cookie进行访问
+        webClient.getCookieManager().clearCookies();
         if (rand.nextFloat() > 1 / GlobalProperties.getGlobalProps().getBasic().getAdvPVAdvUV()) {
             Set<Cookie> sendCookie = CookiesStorer.getInstance().getRandomCookieSet();
             if (null != sendCookie) {
@@ -49,32 +43,32 @@ public class URLAccessor {
                 }
             }
         }
-        try {
-            tryAccessURL(webClient, clickURL, RETRY_TIMES);
-        } catch (InterruptedException e) {
-            Log4jUtils.getLogger().error("URL访问重试的线程被中断......", e);
+        //按重试次数和访问成功的条件，确认继续访问还是退出
+        boolean result = false;
+        for (int i = 0; i < RETRY_TIMES && !result; i++) {
+            result = tryAccessURL(webClient, clickURL);
+            try {
+                Thread.sleep(RETRY_SLEEP * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        return result;
     }
 
-    private void tryAccessURL(WebClient webClient, String clickURL, int tryCount) throws InterruptedException {
+    private boolean tryAccessURL(WebClient webClient, String clickURL) {
         try {
-            if(tryCount > 0) {
-                //模拟浏览器打开一个目标网址
-                HtmlPage page = webClient.getPage(clickURL);
-                System.out.println(page.getTitleText());
+            //模拟浏览器打开一个目标网址
+            HtmlPage page = webClient.getPage(clickURL);
+            Log4jUtils.getLogger().info("打开的网页标题为：" + page.getTitleText());
 
-                // 取得cookie放入Cookie存储对象中
-                Set<Cookie> receiveCookie = webClient.getCookieManager().getCookies();
-                CookiesStorer.getInstance().addCookie(receiveCookie);
-            }
-        } catch (IOException e) {
+            // 取得cookie放入Cookie存储对象中
+            Set<Cookie> receiveCookie = webClient.getCookieManager().getCookies();
+            CookiesStorer.getInstance().addCookie(receiveCookie);
+            return true;
+        } catch (Exception e) {
             Log4jUtils.getLogger().error("创建访问" + clickURL + "时抛出异常，尝试重连......", e);
-            Thread.sleep(RETRY_SLEEP * 1000);
-            tryAccessURL(webClient, clickURL, --tryCount);
-        } finally {
-            if(null != webClient){
-                webClient.close();
-            }
+            return false;
         }
     }
 }

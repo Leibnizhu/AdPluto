@@ -40,7 +40,7 @@ public class CommonUtils {
      */
     private static final String TAG_ID = "{tag}";
 
-    public static String microReplace(RequestParams req) {
+    public static void microReplace(RequestParams req) {
         StringBuffer sb = new StringBuffer(req.getClickURL());
         CommonUtils.replaceStringBuffer(sb, ADX_ID, req.getAdxId());
         //CommonUtils.replaceStringBuffer(sb, CAMP_ID, campid);
@@ -50,7 +50,7 @@ public class CommonUtils {
         CommonUtils.replaceStringBuffer(sb, CT_ID, req.getCrtvPkgId());
         CommonUtils.replaceStringBuffer(sb, TAG_ID, req.getTag());
         //CommonUtils.replaceStringBuffer(sb, REF_DOMAIN_ID, refsizeid));
-        return sb.toString();
+        req.setClickURL(sb.toString());
     }
 
     /**
