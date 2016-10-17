@@ -1,7 +1,5 @@
 package com.turingdi.adpluto.starter;
 
-import java.util.Random;
-
 import com.turingdi.adpluto.entity.GlobalProperties;
 import com.turingdi.adpluto.entity.GlobalProperties.Size;
 import com.turingdi.adpluto.entity.RequestParams;
@@ -23,7 +21,7 @@ public class AdPlutoStarter {
         GlobalProperties props = GlobalProperties.getGlobalProps();
         int clkCount = 0; //统计当前执行了多少次广告主落地页的PV
         int totalPV = (int) (props.getBasic().getTotaluv() * props.getBasic().getAdvPVAdvUV());
-        Random rand = new Random(System.currentTimeMillis());
+
         //遍历所有可能的宏替换排列组合
         while (clkCount < totalPV) {
             for (GlobalProperties.Campaign camp : props.getCamp()) {
@@ -33,17 +31,16 @@ public class AdPlutoStarter {
                             for (String adzoneId : props.getSpotid()) {
                                 for (String tag : props.getTag()) {
                                     for (String clickURL : props.getUrl()) {
-                                        //URL宏替换
                                         RequestParams req = new RequestParams(clickURL, camp.getAdxid(), size, crtvPkgId, campid, adzoneId, tag);
+                                        //URL宏替换
                                         clickURL = CommonUtils.microReplace(req);
-                                        Log4jUtils.getLogger().debug(clickURL);
+                                        Log4jUtils.getLogger().debug("实际访问URL：" + clickURL);
                                         //按指定的PVUV比例访问URL
-                                        //URLAccessor.getInstance().accessURL(clickURL, rand);
+                                        URLAccessor.getInstance().accessURL(clickURL);
                                         //写入扒数平台的MySQL
                                         DatabaseAccessor.getInstance().incrDataBase(req);
-                                        clkCount++;
                                         //需要触发的点击次数
-                                        if (clkCount >= totalPV) {
+                                        if (++clkCount >= totalPV) {
                                             return;
                                         }
                                     }
