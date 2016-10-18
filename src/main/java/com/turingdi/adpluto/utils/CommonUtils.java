@@ -2,6 +2,10 @@ package com.turingdi.adpluto.utils;
 
 import com.turingdi.adpluto.entity.RequestParams;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class CommonUtils {
 
     /**
@@ -67,4 +71,9 @@ public class CommonUtils {
         }
     }
 
+    public static <T> T[] shuffleArray(T[] source){
+        List<T> list = Arrays.asList(source);
+        Collections.shuffle(list);
+        return (T[])list.toArray();
+    }
 }

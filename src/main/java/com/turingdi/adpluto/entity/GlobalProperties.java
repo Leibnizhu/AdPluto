@@ -4,9 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
 /**
@@ -40,6 +43,26 @@ public class GlobalProperties {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 打乱所有数组，以免刷多次少量的时候，访问的参数值不均匀
+     */
+    public void shuffle(){
+        //打乱URL
+        this.setUrl(CommonUtils.shuffleArray(this.getUrl()));
+        //打乱size
+        this.setSize(CommonUtils.shuffleArray(this.getSize()));
+        //打乱camp
+        this.setCamp(CommonUtils.shuffleArray(this.getCamp()));
+        //打乱ctid
+        this.setCtid(CommonUtils.shuffleArray(this.getCtid()));
+        //打乱spotid
+        this.setSpotid(CommonUtils.shuffleArray(this.getSpotid()));
+        //打乱tag
+        this.setTag(CommonUtils.shuffleArray(this.getTag()));
+
+        Log4jUtils.getLogger().info("打乱后的配置对象为:" + this.toString());
     }
 
     /**

@@ -22,6 +22,7 @@ public class AdPlutoStarter {
 
     public static void main(String[] args) throws InterruptedException {
         Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());//初始化基本配置
+        GlobalProperties.getGlobalProps().shuffle();//打乱配置
         MySQLUtils.initMySQLPool();//初始化MySQL连接池
         AdPlutoStarter starter = new AdPlutoStarter();
         starter.startCheater();//启动作弊器
