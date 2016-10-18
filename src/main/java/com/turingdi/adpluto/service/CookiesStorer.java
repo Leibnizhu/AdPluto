@@ -42,7 +42,7 @@ class CookiesStorer {
         return null;
     }
 
-    public void addCookie(Set<Cookie> cookies) {
+    void addCookie(Set<Cookie> cookies) {
         cookiesSetSet.add(cookies);
         Log4jUtils.getLogger().debug(cookiesSetSet);
     }

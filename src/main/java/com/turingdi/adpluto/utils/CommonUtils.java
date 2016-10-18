@@ -7,10 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommonUtils {
-
-    /**
-     * 以下是各种宏替换字段
-     */
     /**
      * 宏替换，渠道id，例如是Tanx还是百度
      */
@@ -18,7 +14,7 @@ public class CommonUtils {
     /**
      * 宏替换，广告投放活动id
      */
-//    private static final String CAMP_ID = "{campaignid}";
+    private static final String CAMP_ID = "{campaignid}";
     /**
      * 宏替换，广告位id
      */
@@ -36,10 +32,6 @@ public class CommonUtils {
      */
     private static final String CT_ID = "{ctid}";
     /**
-     * 宏替换，来源域名ID
-     */
-//    private static final String REF_DOMAIN_ID = "{refh}";
-    /**
      * 宏替换，人群标签
      */
     private static final String TAG_ID = "{tag}";
@@ -47,13 +39,12 @@ public class CommonUtils {
     public static void microReplace(RequestParams req) {
         StringBuffer sb = new StringBuffer(req.getClickURL());
         CommonUtils.replaceStringBuffer(sb, ADX_ID, req.getAdxId());
-        //CommonUtils.replaceStringBuffer(sb, CAMP_ID, campid);
+        CommonUtils.replaceStringBuffer(sb, CAMP_ID, req.getCampid());
         CommonUtils.replaceStringBuffer(sb, ADZONE_ID, req.getAdzoneId());
         CommonUtils.replaceStringBuffer(sb, WIDTH, req.getSize().getWidth());
         CommonUtils.replaceStringBuffer(sb, HEIGHT, req.getSize().getHeight());
         CommonUtils.replaceStringBuffer(sb, CT_ID, req.getCrtvPkgId());
         CommonUtils.replaceStringBuffer(sb, TAG_ID, req.getTag());
-        //CommonUtils.replaceStringBuffer(sb, REF_DOMAIN_ID, refsizeid));
         req.setClickURL(sb.toString());
     }
 
@@ -71,6 +62,7 @@ public class CommonUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T[] shuffleArray(T[] source){
         List<T> list = Arrays.asList(source);
         Collections.shuffle(list);

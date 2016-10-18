@@ -4,8 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
@@ -92,6 +90,7 @@ public class GlobalProperties {
             return totaluv;
         }
 
+        @SuppressWarnings("unused")
         public Basic setTotaluv(int totaluv) {
             this.totaluv = totaluv;
             return this;
@@ -101,6 +100,7 @@ public class GlobalProperties {
             return advPVAdvUV;
         }
 
+        @SuppressWarnings("unused")
         public Basic setAdvPVAdvUV(double advPVAdvUV) {
             this.advPVAdvUV = advPVAdvUV;
             return this;
@@ -110,6 +110,7 @@ public class GlobalProperties {
             return dspClickAdvUV;
         }
 
+        @SuppressWarnings("unused")
         public Basic setDspClickAdvUV(double dspClickAdvUV) {
             this.dspClickAdvUV = dspClickAdvUV;
             return this;
@@ -119,6 +120,7 @@ public class GlobalProperties {
             return dspImpAdvUV;
         }
 
+        @SuppressWarnings("unused")
         public Basic setDspImpAdvUV(double dspImpAdvUV) {
             this.dspImpAdvUV = dspImpAdvUV;
             return this;
@@ -144,6 +146,7 @@ public class GlobalProperties {
         /**
          * @param width the width to set
          */
+        @SuppressWarnings("unused")
         public Size setWidth(String width) {
             this.width = width;
             return this;
@@ -159,6 +162,7 @@ public class GlobalProperties {
         /**
          * @param height the height to set
          */
+        @SuppressWarnings("unused")
         public Size setHeight(String height) {
             this.height = height;
             return this;
@@ -181,6 +185,7 @@ public class GlobalProperties {
             return adxid;
         }
 
+        @SuppressWarnings("unused")
         public Campaign setAdxid(String adxid) {
             this.adxid = adxid;
             return this;
@@ -190,6 +195,7 @@ public class GlobalProperties {
             return campid;
         }
 
+        @SuppressWarnings("unused")
         public Campaign setCampid(String[] campid) {
             this.campid = campid;
             return this;
@@ -221,6 +227,7 @@ public class GlobalProperties {
             return adxidMapping;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setAdxidMapping(Map<String, String> adxidMapping) {
             this.adxidMapping = adxidMapping;
             return this;
@@ -230,6 +237,7 @@ public class GlobalProperties {
             return JDBCDriver;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setJDBCDriver(String JDBCDriver) {
             this.JDBCDriver = JDBCDriver;
             return this;
@@ -239,6 +247,7 @@ public class GlobalProperties {
             return url;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setUrl(String url) {
             this.url = url;
             return this;
@@ -248,6 +257,7 @@ public class GlobalProperties {
             return userId;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setUserId(String userId) {
             this.userId = userId;
             return this;
@@ -257,6 +267,7 @@ public class GlobalProperties {
             return password;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setPassword(String password) {
             this.password = password;
             return this;
@@ -266,6 +277,7 @@ public class GlobalProperties {
             return initConns;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setInitConns(int initConns) {
             this.initConns = initConns;
             return this;
@@ -275,6 +287,7 @@ public class GlobalProperties {
             return maxConns;
         }
 
+        @SuppressWarnings("unused")
         public Mysql setMaxConns(int maxConns) {
             this.maxConns = maxConns;
             return this;
