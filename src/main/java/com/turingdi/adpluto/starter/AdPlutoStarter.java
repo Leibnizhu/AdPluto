@@ -8,17 +8,16 @@ import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.Log4jUtils;
 import com.turingdi.adpluto.utils.MySQLUtils;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class AdPlutoStarter {
     //线程池大小
     private static final int POOL_SIZE = 5;
     //任务队列最大长度
     private static final int QUEUE_MAX_LENGTH = 100;
+    //线程池对象
     private ExecutorService threadPool;
+    //任务队列
     private static final LinkedBlockingQueue<RequestParams> reqQueueStack = new LinkedBlockingQueue<>(QUEUE_MAX_LENGTH);
 
     public static void main(String[] args) throws InterruptedException {
@@ -26,9 +25,6 @@ public class AdPlutoStarter {
         MySQLUtils.initMySQLPool();//初始化MySQL连接池
         AdPlutoStarter starter = new AdPlutoStarter();
         starter.startCheater();//启动作弊器
-        while(!starter.threadPool.awaitTermination(1, TimeUnit.SECONDS)){
-            Log4jUtils.getLogger().info("等待线程池关闭ing...");
-        }
         MySQLUtils.closePool();//关闭MySQL连接池
     }
 
@@ -53,6 +49,7 @@ public class AdPlutoStarter {
                                         }
                                         //需要触发的点击次数
                                         if (++clkCount >= totalPV) {
+                                            closeThreadPool();
                                             return;
                                         }
                                     }
@@ -63,25 +60,28 @@ public class AdPlutoStarter {
                 }
             }
         }
-        closeThreadPool();
     }
 
-    private void closeThreadPool() {
+    private void closeThreadPool() throws InterruptedException {
         threadPool.shutdown();
+        do{
+            Log4jUtils.getLogger().info("等待线程池关闭...");
+        } while(!threadPool.awaitTermination(5, TimeUnit.SECONDS));
+        Log4jUtils.getLogger().info("线程池已关闭，正在退出...");
     }
 
     private void initThreadPool() {
         threadPool = Executors.newFixedThreadPool(POOL_SIZE);
         for(int i = 0; i < POOL_SIZE; i++){
-            threadPool.execute(new Processor());
+            threadPool.submit(new Processor());
         }
     }
 
-    private class Processor implements Runnable{
+    private class Processor implements Callable<String>{
         private URLAccessor urlAccessor = new URLAccessor();
 
         @Override
-        public void run() {
+        public String call() throws Exception {
             while(true){
                 // 从队列弹出数据
                 System.out.println("任务队列长度：" + reqQueueStack.size());
@@ -105,6 +105,8 @@ public class AdPlutoStarter {
                     }
                 }
             }
+            Log4jUtils.getLogger().info("当前线程处理完毕，准备关闭...");
+            return "Success";
         }
     }
 }
