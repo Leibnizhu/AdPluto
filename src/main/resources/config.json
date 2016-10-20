@@ -1,7 +1,7 @@
 {
   "basic": {
     //需要投放的总UV数（广告主监测到的）
-    "totaluv": 100,
+    "totaluv": 50,
     //Adobe监测到的PV和UV的比值
     "advPVAdvUV": 1.5,
     //DSP端增加的点击与Adobe监测的UV的比值

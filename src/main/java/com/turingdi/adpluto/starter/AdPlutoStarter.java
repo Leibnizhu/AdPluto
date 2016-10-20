@@ -67,7 +67,7 @@ public class AdPlutoStarter {
         threadPool.shutdown();
         do{
             Log4jUtils.getLogger().info("等待线程池关闭...");
-        } while(!threadPool.awaitTermination(5, TimeUnit.SECONDS));
+        } while(!threadPool.awaitTermination(10, TimeUnit.SECONDS));
         Log4jUtils.getLogger().info("线程池已关闭，正在退出...");
     }
 

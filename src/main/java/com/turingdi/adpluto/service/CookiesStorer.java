@@ -44,6 +44,6 @@ class CookiesStorer {
 
     void addCookie(Set<Cookie> cookies) {
         cookiesSetSet.add(cookies);
-        Log4jUtils.getLogger().debug(cookiesSetSet);
+        //Log4jUtils.getLogger().debug(cookiesSetSet);
     }
 }
