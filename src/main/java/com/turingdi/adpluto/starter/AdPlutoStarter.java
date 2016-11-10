@@ -91,9 +91,11 @@ public class AdPlutoStarter {
                     String clickURL = req.getClickURL();
                     Log4jUtils.getLogger().info("实际访问URL：" + clickURL);
                     //按指定的PVUV比例访问URL
-                    if(urlAccessor.accessURL(clickURL)){
+                    if(urlAccessor.accessURL(clickURL) && req.getMysqlAdxId() != null){
                         //写入扒数平台的MySQL
                         DatabaseAccessor.getInstance().incrDataBase(req);
+                    } else {
+                        Log4jUtils.getLogger().info("本次访问无需写入Data Optimus数据库");
                     }
                 } else {
                     try {
