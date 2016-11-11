@@ -19,6 +19,8 @@ public class AdPlutoStarter {
     private ExecutorService threadPool;
     //任务队列
     private static final LinkedBlockingQueue<RequestParams> reqQueueStack = new LinkedBlockingQueue<>(QUEUE_MAX_LENGTH);
+    //任务执行次数统计
+    private volatile int browsedCount = 0;
 
     public static void main(String[] args) throws InterruptedException {
         Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());//初始化基本配置
@@ -88,6 +90,8 @@ public class AdPlutoStarter {
                 System.out.println("任务队列长度：" + reqQueueStack.size());
                 if (reqQueueStack.size() > 0) {
                     RequestParams req = reqQueueStack.poll();
+                    browsedCount++;
+                    Log4jUtils.getLogger().info("执行第" + browsedCount + "次任务");
                     String clickURL = req.getClickURL();
                     Log4jUtils.getLogger().info("实际访问URL：" + clickURL);
                     //按指定的PVUV比例访问URL
