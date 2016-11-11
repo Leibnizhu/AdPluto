@@ -43,6 +43,9 @@ class CookiesStorer {
     }
 
     void addCookie(Set<Cookie> cookies) {
+        if(cookiesSetSet.size() >= 30){
+            cookiesSetSet.remove(getRandomCookieSet());
+        }
         cookiesSetSet.add(cookies);
         //Log4jUtils.getLogger().debug(cookiesSetSet);
     }
