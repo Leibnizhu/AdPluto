@@ -5,6 +5,7 @@ import com.turingdi.adpluto.entity.RequestParams;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class CommonUtils {
     /**
@@ -67,5 +68,18 @@ public class CommonUtils {
         List<T> list = Arrays.asList(source);
         Collections.shuffle(list);
         return (T[])list.toArray();
+    }
+
+    public static String getRandomIPAddr(){
+        Random rand = new Random(System.currentTimeMillis());
+        return new StringBuffer()
+                .append(rand.nextInt(100)+150)
+                .append(".")
+                .append(rand.nextInt(100)+150)
+                .append(".")
+                .append(rand.nextInt(100)+150)
+                .append(".")
+                .append(rand.nextInt(100)+150)
+                .toString();
     }
 }
