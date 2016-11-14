@@ -1,0 +1,1 @@
+java -Xms1024M -Xmx2048M -Xss512k -XX:NewSize=512M -XX:+AggressiveOpts -jar AdPluto.jar
