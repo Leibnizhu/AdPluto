@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
@@ -24,6 +25,8 @@ public class URLAccessor {
     //WebClient使用次数统计
     private int useCount = 0;
 
+    private static final ProxyConfig anonymityProxy = new ProxyConfig("127.0.0.1", 9150, true);
+
     public URLAccessor() {
         newWebClient();
     }
@@ -31,6 +34,7 @@ public class URLAccessor {
     private void newWebClient() {
         //创建一个CHROME浏览器Client
         webClient = new WebClient(BrowserVersion.FIREFOX_38);
+        //webClient.getOptions().setProxyConfig(anonymityProxy);
         //设置webClient的相关参数
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
         webClient.getOptions().setJavaScriptEnabled(true);//必须加载JS，保证监控能够被执行
