@@ -15,9 +15,9 @@ import com.turingdi.adpluto.utils.Log4jUtils;
 
 public class URLAccessor {
     //连接重试的次数
-    private static final int RETRY_TIMES = 3;
+    private static final int RETRY_TIMES = 10;
     //连接重试之前的等待时间，秒
-    private static final int RETRY_SLEEP = 10;
+    private static final int RETRY_SLEEP = 6;
     //每个WebClient的使用次数限值
     private static final int WEBCLIENT_USE_TIMES = 6;
     //当前URLAccessor对象唯一的一个WebClient
@@ -25,26 +25,25 @@ public class URLAccessor {
     //WebClient使用次数统计
     private int useCount = 0;
 
-    private static final ProxyConfig anonymityProxy = new ProxyConfig("127.0.0.1", 9150, true);
-
     public URLAccessor() {
         newWebClient();
     }
 
     private void newWebClient() {
         //创建一个CHROME浏览器Client
-        webClient = new WebClient(BrowserVersion.FIREFOX_38);
-        //webClient.getOptions().setProxyConfig(anonymityProxy);
+        webClient = new WebClient(BrowserVersion.FIREFOX_45);
         //设置webClient的相关参数
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
         webClient.getOptions().setJavaScriptEnabled(true);//必须加载JS，保证监控能够被执行
         webClient.getOptions().setCssEnabled(false);//不加载CSS，提高解析速度
         webClient.getOptions().setTimeout(35000);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.addRequestHeader("X-Forwarded-For", CommonUtils.getRandomIPAddr());
-        webClient.addRequestHeader("Proxy-Client-IP", CommonUtils.getRandomIPAddr());
-        webClient.addRequestHeader("WL-Proxy-Client-IP", CommonUtils.getRandomIPAddr());
-        webClient.addRequestHeader("HTTP-Client-IP", CommonUtils.getRandomIPAddr());
+        //HTTP请求头设置假IP参数
+        webClient.addRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
+//        webClient.addRequestHeader("X-Forwarded-For", CommonUtils.getRandomIPAddr());
+//        webClient.addRequestHeader("Proxy-Client-IP", CommonUtils.getRandomIPAddr());
+//        webClient.addRequestHeader("WL-Proxy-Client-IP", CommonUtils.getRandomIPAddr());
+//        webClient.addRequestHeader("HTTP-Client-IP", CommonUtils.getRandomIPAddr());
     }
 
     public boolean accessURL(String clickURL) {
@@ -87,6 +86,10 @@ public class URLAccessor {
 
     private boolean tryAccessURL(WebClient webClient, String clickURL) {
         try {
+            //每次访问切换代理
+            ProxyConfig anonymityProxy = ProxyHolder.getInstance().getRandomProxy();
+            webClient.getOptions().setProxyConfig(anonymityProxy);
+            Log4jUtils.getLogger().info("正在使用代理" + anonymityProxy.getProxyHost() + ":" + anonymityProxy.getProxyPort() + "进行访问。");
             //模拟浏览器打开一个目标网址
             HtmlPage page = webClient.getPage(clickURL);
             Log4jUtils.getLogger().info("打开的网页标题为：" + page.getTitleText());
@@ -96,7 +99,10 @@ public class URLAccessor {
             CookiesStorer.getInstance().addCookie(receiveCookie);
             return true;
         } catch (Exception e) {
-            Log4jUtils.getLogger().error("创建访问" + clickURL + "时抛出异常，尝试重连......", e);
+            if(e.getMessage().contains("403 Forbid")){
+                ProxyHolder.getInstance().handleForbidden(webClient.getOptions().getProxyConfig());
+            }
+            Log4jUtils.getLogger().error("访问" + clickURL + "时抛出异常，尝试重连......");
             return false;
         }
     }
