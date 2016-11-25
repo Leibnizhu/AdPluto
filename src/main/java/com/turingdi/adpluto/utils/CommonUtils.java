@@ -2,6 +2,11 @@ package com.turingdi.adpluto.utils;
 
 import com.turingdi.adpluto.entity.RequestParams;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -81,5 +86,36 @@ public class CommonUtils {
                 .append(".")
                 .append(rand.nextInt(100)+150)
                 .toString();
+    }
+
+    public static String sendGetRequest(String url){
+        BufferedReader in = null;
+        StringBuffer sbuf = new StringBuffer();
+        try {
+            URL reqURL = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) reqURL.openConnection(); // 进行连接，但是实际上getrequest要在下一句的connection.getInputStream() 函数中才会真正发到服务器
+            connection.setDoOutput(false);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(200);
+            connection.setDoInput(true);
+            connection.connect();
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while((line = in.readLine()) != null){
+                sbuf.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != in) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return sbuf.toString();
     }
 }
