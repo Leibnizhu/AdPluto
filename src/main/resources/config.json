@@ -1,7 +1,7 @@
 {
   "basic": {
     //需要投放的总UV数（广告主监测到的）
-    "totaluv": 200,
+    "totaluv": 50,
     //Adobe监测到的PV和UV的比值
     "advPVAdvUV": 1.5,
     //DSP端增加的点击与Adobe监测的UV的比值
@@ -14,7 +14,7 @@
   },
   "url": [
     //要刷的广告主落地页，包括宏
-    "http://www.sonystyle.com.cn/products/cyber-shot/2016rxseries/index.htm?cid=Zz_{adxid}_{width}x{height}_{ctid}_{tag}_RX100V_1611"
+    "http://www.sonystyle.com.cn/products/cyber-shot/2016rxseries/index.htm"
   ],
   "size": [
     //尺寸，分别替换{width}和{height}。URL中没有这个宏的时候，随意填一个值就行
@@ -31,6 +31,10 @@
       "height": 90
     },
     {
+      "width": 960,
+      "height": 90
+    },
+    {
       "width": 250,
       "height": 250
     },
@@ -43,7 +47,7 @@
     //此处每个记录对应一个渠道，在渠道内再设置这个渠道中所有需要刷的活动
     {
       //渠道ID，替换{adxid}，1为光音渠道，2为科大讯飞，URL中没有这个宏的时候，随意填一个值就行。
-      "adxid":"tanx",
+      "adxid":"10004",
       "campid":[
         //图灵DSP平台上，该渠道中的活动ID
         "248"
@@ -51,14 +55,14 @@
     },
     {
       //渠道ID，替换{adxid}，1为光音渠道，2为科大讯飞，URL中没有这个宏的时候，随意填一个值就行。
-      "adxid":"youku",
+      "adxid":"10008",
       "campid":[
         //图灵DSP平台上，该渠道中的活动ID
         "248"
       ]
     },
     {
-      "adxid":"baidu",
+      "adxid":"10009",
       "campid":[
         "249"
       ]
@@ -66,12 +70,12 @@
   ],
   "ctid": [
     //创意包ID，替换{ctid}，URL中没有这个宏的时候，随意填一个值就行
-    "ds-1-87",
-    "ds-2-87",
-    "ds-3-87",
-    "ds-4-87",
-    "ds-5-87",
-    "ds-6-87"
+    "53826",
+    "53827",
+    "53830",
+    "53831",
+    "53832",
+    "53833"
   ],
   "spotid": [
     //广告位ID，替换{spotid}，URL中没有这个宏的时候，随意填一个值就行
@@ -80,9 +84,11 @@
   "tag": [
     //人群标签值/ID，替换{tag}，URL中没有这个宏的时候，随意填一个值就行
     "81",
+    "87",
     "82",
     "83",
     "84",
+    "87",
     "85",
     "86",
     "87"
@@ -93,6 +99,7 @@
     "url": "jdbc:mysql://120.76.216.115:3306/dspmerger?useUnicode=true&characterEncoding=utf8",
     "userId": "turingmysql",
     "password": "dHVnuA5nHGk",
+    "proxyApi":"http://127.0.0.1:8233",
     "initConns": 10,
     "maxConns": 100,
     "adxidMapping":{

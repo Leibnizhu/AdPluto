@@ -209,6 +209,7 @@ public class GlobalProperties {
         private String password;//密码
         private int initConns;//连接池初始化连接数
         private int maxConns;//连接池最大连接数
+        private String proxyApi;//查询代理列表的API
         private Map<String, String> adxidMapping;//DSP业务平台中的ADX ID和扒数平台中ADX ID的映射关系
 
         @Override
@@ -220,7 +221,17 @@ public class GlobalProperties {
                     ", password='" + password + '\'' +
                     ", initConns=" + initConns +
                     ", maxConns=" + maxConns +
+                    ", proxyApi='" + proxyApi + '\'' +
+                    ", adxidMapping=" + adxidMapping +
                     '}';
+        }
+
+        public String getProxyApi() {
+            return proxyApi;
+        }
+
+        public void setProxyApi(String proxyApi) {
+            this.proxyApi = proxyApi;
         }
 
         public Map<String, String> getAdxidMapping() {
