@@ -18,12 +18,17 @@ public class ProxyHolder {
     private static ProxyHolder INSTANCE = new ProxyHolder();
     private static Map<ProxyConfig, Integer> proxyMap;//记录ProxyConfig及其失败次数
     private static final int ALLOW_FAIL_TIMES = 5;
+    private static final ProxyConfig DIRECT_CONNECT = new ProxyConfig();//默认的直接连接的代理
 
     public static ProxyHolder getInstance() {
         return INSTANCE;
     }
 
     private ProxyHolder() {
+        refreshProxysFromServer();
+    }
+
+    private void refreshProxysFromServer() {
         Log4jUtils.getLogger().info("开始抓取代理列表……");
         String proxyApiUrl = GlobalProperties.getGlobalProps().getMysql().getProxyApi()+"//?types=0";
         String proxyJson = CommonUtils.sendGetRequest(proxyApiUrl);
@@ -41,7 +46,8 @@ public class ProxyHolder {
 
     ProxyConfig getRandomProxy() {
         if (proxyMap.size() <= 0) {
-            return null;
+            refreshProxysFromServer();
+            return DIRECT_CONNECT;
         }
         int randIndex = new Random(System.currentTimeMillis()).nextInt(proxyMap.size());
         int i = 0;
