@@ -3,6 +3,7 @@ package com.turingdi.adpluto.service;
 import com.alibaba.fastjson.JSON;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.turingdi.adpluto.entity.GlobalProperties;
+import com.turingdi.adpluto.entity.Proxy;
 import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
@@ -16,9 +17,10 @@ import java.util.Random;
  */
 public class ProxyHolder {
     private static ProxyHolder INSTANCE = new ProxyHolder();
-    private static Map<ProxyConfig, Integer> proxyMap;//记录ProxyConfig及其失败次数
     private static final int ALLOW_FAIL_TIMES = 5;
     private static final ProxyConfig DIRECT_CONNECT = new ProxyConfig();//默认的直接连接的代理
+
+    private Map<ProxyConfig, Integer> proxyMap;//记录ProxyConfig及其失败次数
 
     public static ProxyHolder getInstance() {
         return INSTANCE;
@@ -72,7 +74,7 @@ public class ProxyHolder {
 
     private String deleteProxyFromServer(ProxyConfig proxyConfig) {
         //拼接调用删除接口的URL
-        String proxyApiUrl = new StringBuffer()
+        String proxyApiUrl = new StringBuilder()
                 .append(GlobalProperties.getGlobalProps().getMysql().getProxyApi())
                 .append("/?delete=true&ip=")
                 .append(proxyConfig.getProxyHost())
@@ -80,26 +82,5 @@ public class ProxyHolder {
                 .append(proxyConfig.getProxyPort())
                 .toString();
         return CommonUtils.sendGetRequest(proxyApiUrl);
-    }
-}
-
-@SuppressWarnings("unused")
-class Proxy{
-    private String ip;
-    private Integer port;
-
-    public Proxy(){
-    }
-    public String getIp() {
-        return ip;
-    }
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-    public Integer getPort() {
-        return port;
-    }
-    public void setPort(Integer port) {
-        this.port = port;
     }
 }

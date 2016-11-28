@@ -75,6 +75,7 @@ public class CommonUtils {
         return (T[])list.toArray();
     }
 
+    @SuppressWarnings("unused")
     public static String getRandomIPAddr(){
         Random rand = new Random(System.currentTimeMillis());
         return new StringBuffer()
@@ -90,7 +91,7 @@ public class CommonUtils {
 
     public static String sendGetRequest(String url){
         BufferedReader in = null;
-        StringBuffer sbuf = new StringBuffer();
+        StringBuilder sbuf = new StringBuilder();
         try {
             URL reqURL = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) reqURL.openConnection(); // 进行连接，但是实际上getrequest要在下一句的connection.getInputStream() 函数中才会真正发到服务器

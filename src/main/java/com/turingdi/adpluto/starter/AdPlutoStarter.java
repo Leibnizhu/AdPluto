@@ -31,7 +31,7 @@ public class AdPlutoStarter {
         Log4jUtils.getLogger().info("已读取配置文件config.json：" + GlobalProperties.getGlobalProps());//初始化基本配置
         GlobalProperties.getGlobalProps().shuffle();//打乱配置
         MySQLUtils.initMySQLPool();//初始化MySQL连接池
-        ProxyHolder.getInstance();
+        ProxyHolder.getInstance().getClass();//初始化本地IP代理池
         AdPlutoStarter starter = new AdPlutoStarter();
         starter.startCheater();//启动作弊器
         MySQLUtils.closePool();//关闭MySQL连接池

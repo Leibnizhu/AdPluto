@@ -1,7 +1,6 @@
 package com.turingdi.adpluto.service;
 
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.turingdi.adpluto.utils.Log4jUtils;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -14,7 +13,7 @@ import java.util.Set;
  */
 class CookiesStorer {
     private static CookiesStorer INSTANCE = new CookiesStorer();
-    private static final Set<Set<Cookie>> cookiesSetSet = new HashSet<>();
+    private final Set<Set<Cookie>> cookiesSetSet = new HashSet<>();
 
     private CookiesStorer() {
     }
