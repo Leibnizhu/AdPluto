@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.turingdi.adpluto.utils.CommonUtils;
@@ -33,7 +32,11 @@ public class GlobalProperties {
      * @param json json字符串
      * @return GlobalProperties对象
      */
-    public static GlobalProperties fromJsonString(String json){
+    public static GlobalProperties parseFrom(String json){
+        return JSON.parseObject(json, GlobalProperties.class);
+    }
+
+    public static GlobalProperties parseFrom(byte[] json){
         return JSON.parseObject(json, GlobalProperties.class);
     }
 
@@ -43,7 +46,7 @@ public class GlobalProperties {
      * @return GlobalProperties对象
      * @throws IOException
      */
-    public static GlobalProperties fromInputStream(InputStream in) throws IOException {
+    public static GlobalProperties parseFrom(InputStream in) throws IOException {
         return JSON.parseObject(in, GlobalProperties.class);
     }
 
@@ -59,7 +62,7 @@ public class GlobalProperties {
         InputStream is = null;
         try {
             is = new BufferedInputStream(GlobalProperties.class.getResourceAsStream("/config.json"));
-            globalProps = GlobalProperties.fromInputStream(is);
+            globalProps = GlobalProperties.parseFrom(is);
         } catch (IOException e) {
             Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
         } finally {
