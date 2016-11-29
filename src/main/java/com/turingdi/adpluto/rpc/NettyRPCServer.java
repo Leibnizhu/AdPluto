@@ -28,11 +28,11 @@ public class NettyRPCServer {
                         protected void initChannel(Channel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpResponseEncoder());
-//                            pipeline.addLast(new TanxProtobufEncoder());
+                            pipeline.addLast(new JsonEncoder());
 
                             pipeline.addLast(new HttpRequestDecoder());
                             pipeline.addLast(new HttpObjectAggregator(4096));
-//                            pipeline.addLast(new TanxProtobufDecoder());
+                            pipeline.addLast(new JsonDecoder());
 //                            pipeline.addLast(new BusinessHandler(bidQueueStack));
                         }
                     });
