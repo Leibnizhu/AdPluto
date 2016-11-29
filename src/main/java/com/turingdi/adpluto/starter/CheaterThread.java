@@ -1,7 +1,8 @@
 package com.turingdi.adpluto.starter;
 
+import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.RequestParams;
-import com.turingdi.adpluto.entity.CheaterSetting;
+import com.turingdi.adpluto.entity.CheaterProperty;
 import com.turingdi.adpluto.service.DatabaseAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.Log4jUtils;
@@ -14,27 +15,29 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by leibniz on 16-11-29.
  */
 public class CheaterThread implements Callable<String> {
-    private URLAccessor urlAccessor = new URLAccessor();
-    private CheaterSetting setting;
-    private int curCount;
+    private URLAccessor urlAccessor;
+    private CheaterProperty cheatProps;
+    private MissionConfig missionConfig;
 
-    public CheaterThread(CheaterSetting setting){
-        this.setting = setting;
+    CheaterThread(CheaterProperty cheatProps, MissionConfig missionConfig) {
+        this.cheatProps = cheatProps;
+        this.missionConfig = missionConfig;
+        urlAccessor = new URLAccessor(missionConfig);
     }
 
     @Override
     public String call() throws Exception {
-        LinkedBlockingQueue<RequestParams> reqQueueStack = setting.getReqQueueStack();
-        Map<String, Integer> failedURL = setting.getFailedURL();
-                Thread.sleep(5000);
-        while(true){
+        LinkedBlockingQueue<RequestParams> reqQueueStack = cheatProps.getReqQueueStack();
+        Map<String, Integer> failedURL = cheatProps.getFailedURL();
+        Thread.sleep(5000);
+        while (true) {
             // 从队列弹出数据
             Log4jUtils.getLogger().info("任务队列长度：" + reqQueueStack.size());
             if (reqQueueStack.size() > 0) {
                 try {
                     RequestParams req = reqQueueStack.poll();
-                    setting.addBrowsedCount();
-                    curCount = setting.getBrowsedCount();
+                    cheatProps.addBrowsedCount();
+                    int curCount = cheatProps.getBrowsedCount();
                     Log4jUtils.getLogger().info("执行第" + curCount + "次任务");
                     String clickURL = req.getClickURL();
                     Log4jUtils.getLogger().info("实际访问URL：" + clickURL);
@@ -42,7 +45,7 @@ public class CheaterThread implements Callable<String> {
                     if (urlAccessor.accessURL(clickURL)) {
                         if (req.getMysqlAdxId() != null) {
                             //写入扒数平台的MySQL
-                            DatabaseAccessor.getInstance().incrDataBase(req);
+                            DatabaseAccessor.getInstance().incrDataBase(req, missionConfig);
                         } else {
                             Log4jUtils.getLogger().info("本次访问无需写入Data Optimus数据库");
                         }
@@ -53,11 +56,11 @@ public class CheaterThread implements Callable<String> {
                         failedURL.put(clickURL, failTime + 1);
                         Log4jUtils.getLogger().info("============>第" + curCount + "次任务失败<============");
                     }
-                } catch (Exception ignored){
+                } catch (Exception ignored) {
                 }
             } else {
                 Thread.sleep(10000);
-                if(reqQueueStack.size() == 0){
+                if (reqQueueStack.size() == 0) {
                     break;
                 }
             }

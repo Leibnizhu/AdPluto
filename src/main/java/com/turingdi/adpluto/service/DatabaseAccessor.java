@@ -25,12 +25,10 @@ public class DatabaseAccessor {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static final MissionConfig.Basic basic = MissionConfig.getGlobalProps().getBasic();
-
-    public boolean incrDataBase(RequestParams req) {
+    public boolean incrDataBase(RequestParams req, MissionConfig missionConfig) {
         String date = SDF.format(new Date());
-        int addClick = calAddClick();
-        int addPV = calAddPV();
+        int addClick = calAddClick(missionConfig.getBasic().getPvClick());
+        int addPV = calAddPV(missionConfig.getBasic().getPvImpl());
         return insertReport(req, date, addClick, addPV) & insertDetail(req, date, addClick, addPV);
     }
 
@@ -88,19 +86,21 @@ public class DatabaseAccessor {
     /**
      * 为当前插入MySQL计算一个Adobe上的PV对应多少个点击
      *
+     * @param pvCLick Adobe上的PV对应多少个点击的比例
      * @return Adobe上的pv对应的点击数
      */
-    private int calAddClick() {
-        return getRandomRound(basic.getDspClickAdvUV() / basic.getAdvPVAdvUV());
+    private int calAddClick(double pvCLick) {
+        return getRandomRound(pvCLick);
     }
 
     /**
      * 为当前插入MySQL计算一个Adobe上的PV对应多少个展示
      *
+     * @param pvImpl Adobe上的PV对应多少个展示的比例
      * @return Adobe上的PV对应的展示数
      */
-    private int calAddPV() {
-        return getRandomRound(basic.getDspImpAdvUV() / basic.getAdvPVAdvUV());
+    private int calAddPV(double pvImpl) {
+        return getRandomRound(pvImpl);
     }
 
     /**

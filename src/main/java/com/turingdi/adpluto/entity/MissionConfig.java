@@ -14,6 +14,7 @@ import com.turingdi.adpluto.utils.Log4jUtils;
  *
  * @author leibniz 2016-10-12 15:23
  */
+@SuppressWarnings("unused")
 public class MissionConfig {
     private Basic basic;// 基本配置
     private String[] url;//要刷的广告主落地页，包括宏
@@ -23,46 +24,40 @@ public class MissionConfig {
     private String[] spotid; // 广告位ID
     private String[] tag;// 人群标签
 
-    private static MissionConfig globalProps;
-
     public MissionConfig(){}
 
-    /**
-     * 静态工厂方法
-     * @param json json字符串
-     * @return GlobalProperties对象
-     */
+
     public static MissionConfig parseFrom(String json){
-        return JSON.parseObject(json, MissionConfig.class);
+        MissionConfig result = JSON.parseObject(json, MissionConfig.class);
+        result.calPvRatio();
+        return result;
     }
 
     public static MissionConfig parseFrom(byte[] json){
-        return JSON.parseObject(json, MissionConfig.class);
+        MissionConfig result = JSON.parseObject(json, MissionConfig.class);
+        result.calPvRatio();
+        return result;
     }
 
-    /**
-     * 静态工厂方法
-     * @param in 输入字节流
-     * @return GlobalProperties对象
-     * @throws IOException
-     */
-    public static MissionConfig parseFrom(InputStream in) throws IOException {
-        return JSON.parseObject(in, MissionConfig.class);
+    private static MissionConfig parseFrom(InputStream in) throws IOException {
+        MissionConfig result = JSON.parseObject(in, MissionConfig.class);
+        result.calPvRatio();
+        return result;
     }
 
-    /**
-     * @return the globalprop
-     */
-    public static synchronized MissionConfig getGlobalProps() {
-        if(null == globalProps) readGlobalPropsFromFile();
-        return globalProps;
+    private void calPvRatio() {
+        Basic basic = this.getBasic();
+        basic.setPvClick(basic.getDspClickAdvUV() / basic.getAdvPVAdvUV());
+        basic.setPvImpl(basic.getDspImpAdvUV() / basic.getAdvPVAdvUV());
     }
 
-    private static void readGlobalPropsFromFile() {
+    public static MissionConfig parseFromDefaultFile() {
         InputStream is = null;
         try {
             is = new BufferedInputStream(MissionConfig.class.getResourceAsStream("/config.json"));
-            globalProps = MissionConfig.parseFrom(is);
+            MissionConfig config = MissionConfig.parseFrom(is);
+            config.shuffle();//打乱配置
+            return config;
         } catch (IOException e) {
             Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
         } finally {
@@ -72,12 +67,13 @@ public class MissionConfig {
                 e.printStackTrace();
             }
         }
+        return null;
     }
 
     /**
      * 打乱所有数组，以免刷多次少量的时候，访问的参数值不均匀
      */
-    public void shuffle(){
+    private void shuffle(){
         //打乱URL
         this.setUrl(CommonUtils.shuffleArray(this.getUrl()));
         //打乱size
@@ -90,8 +86,6 @@ public class MissionConfig {
         this.setSpotid(CommonUtils.shuffleArray(this.getSpotid()));
         //打乱tag
         this.setTag(CommonUtils.shuffleArray(this.getTag()));
-
-        Log4jUtils.getLogger().info("打乱后的配置对象为:" + this.toString());
     }
 
     public static class Basic {
@@ -100,6 +94,9 @@ public class MissionConfig {
         private double dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
         private double dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
 
+        private double pvClick;
+        private double pvImpl;
+
         @Override
         public String toString() {
             return "Basic{" +
@@ -107,14 +104,32 @@ public class MissionConfig {
                     ", advPVAdvUV=" + advPVAdvUV +
                     ", dspClickAdvUV=" + dspClickAdvUV +
                     ", dspImpAdvUV=" + dspImpAdvUV +
+                    ", pvClick=" + pvClick +
+                    ", pvImpl=" + pvImpl +
                     '}';
+        }
+
+        public double getPvClick() {
+            return pvClick;
+        }
+
+        public void setPvClick(double pvClick) {
+            this.pvClick = pvClick;
+        }
+
+        public double getPvImpl() {
+            return pvImpl;
+        }
+
+        public void setPvImpl(double pvImpl) {
+            this.pvImpl = pvImpl;
         }
 
         public int getTotaluv() {
             return totaluv;
         }
 
-        @SuppressWarnings("unused")
+
         public Basic setTotaluv(int totaluv) {
             this.totaluv = totaluv;
             return this;
@@ -124,7 +139,7 @@ public class MissionConfig {
             return advPVAdvUV;
         }
 
-        @SuppressWarnings("unused")
+
         public Basic setAdvPVAdvUV(double advPVAdvUV) {
             this.advPVAdvUV = advPVAdvUV;
             return this;
@@ -134,7 +149,7 @@ public class MissionConfig {
             return dspClickAdvUV;
         }
 
-        @SuppressWarnings("unused")
+
         public Basic setDspClickAdvUV(double dspClickAdvUV) {
             this.dspClickAdvUV = dspClickAdvUV;
             return this;
@@ -144,7 +159,7 @@ public class MissionConfig {
             return dspImpAdvUV;
         }
 
-        @SuppressWarnings("unused")
+
         public Basic setDspImpAdvUV(double dspImpAdvUV) {
             this.dspImpAdvUV = dspImpAdvUV;
             return this;
@@ -170,7 +185,7 @@ public class MissionConfig {
         /**
          * @param width the width to set
          */
-        @SuppressWarnings("unused")
+
         public Size setWidth(String width) {
             this.width = width;
             return this;
@@ -186,7 +201,7 @@ public class MissionConfig {
         /**
          * @param height the height to set
          */
-        @SuppressWarnings("unused")
+
         public Size setHeight(String height) {
             this.height = height;
             return this;
@@ -209,7 +224,7 @@ public class MissionConfig {
             return adxid;
         }
 
-        @SuppressWarnings("unused")
+
         public Campaign setAdxid(String adxid) {
             this.adxid = adxid;
             return this;
@@ -219,7 +234,7 @@ public class MissionConfig {
             return campid;
         }
 
-        @SuppressWarnings("unused")
+
         public Campaign setCampid(String[] campid) {
             this.campid = campid;
             return this;
