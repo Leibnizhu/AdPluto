@@ -1,7 +1,7 @@
 package com.turingdi.adpluto.rpc;
 
 
-import com.turingdi.adpluto.entity.GlobalProperties;
+import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.utils.Log4jUtils;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +25,7 @@ public class JsonDecoder extends SimpleChannelInboundHandler<FullHttpRequest> {
 		if(readableSize > 0){
 			byte[] in = new byte[readableSize];
 			req.content().readBytes(in);
-			GlobalProperties bidreq = GlobalProperties.parseFrom(in);
+			MissionConfig bidreq = MissionConfig.parseFrom(in);
 			ctx.fireChannelRead(bidreq);
 		}
 		//super.channelRead(ctx, req);

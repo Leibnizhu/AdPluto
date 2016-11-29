@@ -14,7 +14,7 @@ import com.turingdi.adpluto.utils.Log4jUtils;
  *
  * @author leibniz 2016-10-12 15:23
  */
-public class GlobalProperties {
+public class MissionConfig {
     private Basic basic;// 基本配置
     private String[] url;//要刷的广告主落地页，包括宏
     private Size[] size;// 尺寸
@@ -23,21 +23,21 @@ public class GlobalProperties {
     private String[] spotid; // 广告位ID
     private String[] tag;// 人群标签
 
-    private static GlobalProperties globalProps;
+    private static MissionConfig globalProps;
 
-    public GlobalProperties(){}
+    public MissionConfig(){}
 
     /**
      * 静态工厂方法
      * @param json json字符串
      * @return GlobalProperties对象
      */
-    public static GlobalProperties parseFrom(String json){
-        return JSON.parseObject(json, GlobalProperties.class);
+    public static MissionConfig parseFrom(String json){
+        return JSON.parseObject(json, MissionConfig.class);
     }
 
-    public static GlobalProperties parseFrom(byte[] json){
-        return JSON.parseObject(json, GlobalProperties.class);
+    public static MissionConfig parseFrom(byte[] json){
+        return JSON.parseObject(json, MissionConfig.class);
     }
 
     /**
@@ -46,14 +46,14 @@ public class GlobalProperties {
      * @return GlobalProperties对象
      * @throws IOException
      */
-    public static GlobalProperties parseFrom(InputStream in) throws IOException {
-        return JSON.parseObject(in, GlobalProperties.class);
+    public static MissionConfig parseFrom(InputStream in) throws IOException {
+        return JSON.parseObject(in, MissionConfig.class);
     }
 
     /**
      * @return the globalprop
      */
-    public static synchronized GlobalProperties getGlobalProps() {
+    public static synchronized MissionConfig getGlobalProps() {
         if(null == globalProps) readGlobalPropsFromFile();
         return globalProps;
     }
@@ -61,8 +61,8 @@ public class GlobalProperties {
     private static void readGlobalPropsFromFile() {
         InputStream is = null;
         try {
-            is = new BufferedInputStream(GlobalProperties.class.getResourceAsStream("/config.json"));
-            globalProps = GlobalProperties.parseFrom(is);
+            is = new BufferedInputStream(MissionConfig.class.getResourceAsStream("/config.json"));
+            globalProps = MissionConfig.parseFrom(is);
         } catch (IOException e) {
             Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
         } finally {
@@ -228,7 +228,7 @@ public class GlobalProperties {
 
     @Override
     public String toString() {
-        return "GlobalProperties{" +
+        return "MissionConfig{" +
                 "basic=" + basic +
                 ", url=" + Arrays.toString(url) +
                 ", size=" + Arrays.toString(size) +
@@ -243,7 +243,7 @@ public class GlobalProperties {
         return basic;
     }
 
-    public GlobalProperties setBasic(Basic basic) {
+    public MissionConfig setBasic(Basic basic) {
         this.basic = basic;
         return this;
     }
@@ -252,7 +252,7 @@ public class GlobalProperties {
         return url;
     }
 
-    public GlobalProperties setUrl(String[] url) {
+    public MissionConfig setUrl(String[] url) {
         this.url = url;
         return this;
     }
@@ -261,7 +261,7 @@ public class GlobalProperties {
         return size;
     }
 
-    public GlobalProperties setSize(Size[] size) {
+    public MissionConfig setSize(Size[] size) {
         this.size = size;
         return this;
     }
@@ -270,7 +270,7 @@ public class GlobalProperties {
         return ctid;
     }
 
-    public GlobalProperties setCtid(String[] ctid) {
+    public MissionConfig setCtid(String[] ctid) {
         this.ctid = ctid;
         return this;
     }
@@ -279,7 +279,7 @@ public class GlobalProperties {
         return camp;
     }
 
-    public GlobalProperties setCamp(Campaign[] camp) {
+    public MissionConfig setCamp(Campaign[] camp) {
         this.camp = camp;
         return this;
     }
@@ -288,7 +288,7 @@ public class GlobalProperties {
         return spotid;
     }
 
-    public GlobalProperties setSpotid(String[] spotid) {
+    public MissionConfig setSpotid(String[] spotid) {
         this.spotid = spotid;
         return this;
     }
@@ -297,7 +297,7 @@ public class GlobalProperties {
         return tag;
     }
 
-    public GlobalProperties setTag(String[] tag) {
+    public MissionConfig setTag(String[] tag) {
         this.tag = tag;
         return this;
     }

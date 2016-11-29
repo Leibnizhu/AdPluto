@@ -9,7 +9,7 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.turingdi.adpluto.entity.GlobalProperties;
+import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
 public class URLAccessor {
@@ -50,7 +50,7 @@ public class URLAccessor {
         Random rand = new Random(System.currentTimeMillis());
         //按指定的比例，从Cookie存储对象中随机获取一个的旧的Cookie进行访问
         webClient.getCookieManager().clearCookies();
-        if (rand.nextFloat() > 1 / GlobalProperties.getGlobalProps().getBasic().getAdvPVAdvUV()) {
+        if (rand.nextFloat() > 1 / MissionConfig.getGlobalProps().getBasic().getAdvPVAdvUV()) {
             Set<Cookie> sendCookie = CookiesStorer.getInstance().getRandomCookieSet();
             if (null != sendCookie) {
                 for (Cookie cookie : sendCookie) {

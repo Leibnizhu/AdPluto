@@ -103,7 +103,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>com.turingdi.adpluto.starter.AdPlutoStarter</mainClass>
+							<mainClass>com.turingdi.adpluto.starter.MainStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

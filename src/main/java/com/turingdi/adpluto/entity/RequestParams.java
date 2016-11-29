@@ -11,13 +11,13 @@ public class RequestParams {
     private String clickURL;
     private String adxId;
     private String mysqlAdxId;// 在MySQL中的ADX ID
-    private GlobalProperties.Size size;
+    private MissionConfig.Size size;
     private String crtvPkgId;
     private String campid;
     private String adzoneId;
     private String tag;
 
-    public RequestParams(String clickURL, String adxId, GlobalProperties.Size size, String crtvPkgId, String campid, String adzoneId, String tag) {
+    public RequestParams(String clickURL, String adxId, MissionConfig.Size size, String crtvPkgId, String campid, String adzoneId, String tag) {
         this.clickURL = clickURL;
         this.adxId = adxId;
         this.mysqlAdxId = SystemConfig.getInstance().getAdxidMapping().get(adxId);
@@ -50,7 +50,7 @@ public class RequestParams {
         return adxId;
     }
 
-    public GlobalProperties.Size getSize() {
+    public MissionConfig.Size getSize() {
         return size;
     }
 

@@ -1,7 +1,7 @@
 package com.turingdi.adpluto.starter;
 
 import com.turingdi.adpluto.entity.RequestParams;
-import com.turingdi.adpluto.entity.StarterConfig;
+import com.turingdi.adpluto.entity.CheaterSetting;
 import com.turingdi.adpluto.service.DatabaseAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.Log4jUtils;
@@ -13,14 +13,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 /*
  * Created by leibniz on 16-11-29.
  */
-public class URLMissionProcessor  implements Callable<String> {
+public class CheaterThread implements Callable<String> {
     private URLAccessor urlAccessor = new URLAccessor();
+    private CheaterSetting setting;
     private int curCount;
+
+    public CheaterThread(CheaterSetting setting){
+        this.setting = setting;
+    }
 
     @Override
     public String call() throws Exception {
-        LinkedBlockingQueue<RequestParams> reqQueueStack = StarterConfig.getReqQueueStack();
-        Map<String, Integer> failedURL = StarterConfig.getFailedURL();
+        LinkedBlockingQueue<RequestParams> reqQueueStack = setting.getReqQueueStack();
+        Map<String, Integer> failedURL = setting.getFailedURL();
                 Thread.sleep(5000);
         while(true){
             // 从队列弹出数据
@@ -28,8 +33,8 @@ public class URLMissionProcessor  implements Callable<String> {
             if (reqQueueStack.size() > 0) {
                 try {
                     RequestParams req = reqQueueStack.poll();
-                    StarterConfig.addBrowsedCount();
-                    curCount = StarterConfig.getBrowsedCount();
+                    setting.addBrowsedCount();
+                    curCount = setting.getBrowsedCount();
                     Log4jUtils.getLogger().info("执行第" + curCount + "次任务");
                     String clickURL = req.getClickURL();
                     Log4jUtils.getLogger().info("实际访问URL：" + clickURL);

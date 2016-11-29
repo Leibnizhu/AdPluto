@@ -1,7 +1,6 @@
 package com.turingdi.adpluto.utils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.turingdi.adpluto.entity.GlobalProperties;
 import com.turingdi.adpluto.entity.SystemConfig;
 
 import java.beans.PropertyVetoException;

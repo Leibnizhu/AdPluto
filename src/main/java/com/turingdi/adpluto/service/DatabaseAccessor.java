@@ -1,6 +1,6 @@
 package com.turingdi.adpluto.service;
 
-import com.turingdi.adpluto.entity.GlobalProperties;
+import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.RequestParams;
 import com.turingdi.adpluto.utils.Log4jUtils;
 import com.turingdi.adpluto.utils.MySQLUtils;
@@ -25,7 +25,7 @@ public class DatabaseAccessor {
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static final GlobalProperties.Basic basic = GlobalProperties.getGlobalProps().getBasic();
+    private static final MissionConfig.Basic basic = MissionConfig.getGlobalProps().getBasic();
 
     public boolean incrDataBase(RequestParams req) {
         String date = SDF.format(new Date());
