@@ -46,6 +46,5 @@ class CookiesStorer {
             cookiesSetSet.remove(getRandomCookieSet());
         }
         cookiesSetSet.add(cookies);
-        //Log4jUtils.getLogger().debug(cookiesSetSet);
     }
 }
