@@ -1,0 +1,16 @@
+//数据库配置，请不要修改
+{
+    "JDBCDriver": "com.mysql.jdbc.Driver",
+    "url": "jdbc:mysql://120.76.216.115:3306/dspmerger?useUnicode=true&characterEncoding=utf8",
+    "userId": "turingmysql",
+    "password": "dHVnuA5nHGk",
+    "proxyApi":"http://127.0.0.1:8000",
+    "serverPort":8999,
+    "initConns": 10,
+    "maxConns": 100,
+    "adxidMapping": {
+      //DSP业务平台中的ADX ID和扒数平台中渠道 ID的映射关系
+      "1": "9",
+      "2": "10"
+    }
+}

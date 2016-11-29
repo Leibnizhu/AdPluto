@@ -2,6 +2,7 @@ package com.turingdi.adpluto.utils;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.turingdi.adpluto.entity.GlobalProperties;
+import com.turingdi.adpluto.entity.SystemConfig;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
@@ -13,12 +14,13 @@ public class MySQLUtils {
     public static void initMySQLPool() {
         cpds = new ComboPooledDataSource();
         try {
-            cpds.setDriverClass(GlobalProperties.getGlobalProps().getMysql().getJDBCDriver());
-            cpds.setJdbcUrl(GlobalProperties.getGlobalProps().getMysql().getUrl());
-            cpds.setUser(GlobalProperties.getGlobalProps().getMysql().getUserId());
-            cpds.setPassword(GlobalProperties.getGlobalProps().getMysql().getPassword());
-            cpds.setInitialPoolSize(GlobalProperties.getGlobalProps().getMysql().getInitConns());
-            cpds.setMaxPoolSize(GlobalProperties.getGlobalProps().getMysql().getMaxConns());
+            SystemConfig sysConfig = SystemConfig.getInstance();
+            cpds.setDriverClass(sysConfig.getJDBCDriver());
+            cpds.setJdbcUrl(sysConfig.getUrl());
+            cpds.setUser(sysConfig.getUserId());
+            cpds.setPassword(sysConfig.getPassword());
+            cpds.setInitialPoolSize(sysConfig.getInitConns());
+            cpds.setMaxPoolSize(sysConfig.getMaxConns());
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }

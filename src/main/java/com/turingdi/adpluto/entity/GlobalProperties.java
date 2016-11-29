@@ -23,15 +23,43 @@ public class GlobalProperties {
     private String[] ctid;// 创意包ID
     private String[] spotid; // 广告位ID
     private String[] tag;// 人群标签
-    private Mysql mysql;//MySQL配置
 
     private static GlobalProperties globalProps;
 
-    static {
+    public GlobalProperties(){}
+
+    /**
+     * 静态工厂方法
+     * @param json json字符串
+     * @return GlobalProperties对象
+     */
+    public static GlobalProperties fromJsonString(String json){
+        return JSON.parseObject(json, GlobalProperties.class);
+    }
+
+    /**
+     * 静态工厂方法
+     * @param in 输入字节流
+     * @return GlobalProperties对象
+     * @throws IOException
+     */
+    public static GlobalProperties fromInputStream(InputStream in) throws IOException {
+        return JSON.parseObject(in, GlobalProperties.class);
+    }
+
+    /**
+     * @return the globalprop
+     */
+    public static synchronized GlobalProperties getGlobalProps() {
+        if(null == globalProps) readGlobalPropsFromFile();
+        return globalProps;
+    }
+
+    private static void readGlobalPropsFromFile() {
         InputStream is = null;
         try {
             is = new BufferedInputStream(GlobalProperties.class.getResourceAsStream("/config.json"));
-            globalProps = JSON.parseObject(is, GlobalProperties.class);
+            globalProps = GlobalProperties.fromInputStream(is);
         } catch (IOException e) {
             Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
         } finally {
@@ -61,13 +89,6 @@ public class GlobalProperties {
         this.setTag(CommonUtils.shuffleArray(this.getTag()));
 
         Log4jUtils.getLogger().info("打乱后的配置对象为:" + this.toString());
-    }
-
-    /**
-     * @return the globalprop
-     */
-    public static GlobalProperties getGlobalProps() {
-        return globalProps;
     }
 
     public static class Basic {
@@ -202,109 +223,6 @@ public class GlobalProperties {
         }
     }
 
-    public static class Mysql {
-        private String JDBCDriver; //驱动类名
-        private String url;//MySQL数据库地址
-        private String userId;//用户名
-        private String password;//密码
-        private int initConns;//连接池初始化连接数
-        private int maxConns;//连接池最大连接数
-        private String proxyApi;//查询代理列表的API
-        private Map<String, String> adxidMapping;//DSP业务平台中的ADX ID和扒数平台中ADX ID的映射关系
-
-        @Override
-        public String toString() {
-            return "Mysql{" +
-                    "JDBCDriver='" + JDBCDriver + '\'' +
-                    ", url='" + url + '\'' +
-                    ", userId='" + userId + '\'' +
-                    ", password='" + password + '\'' +
-                    ", initConns=" + initConns +
-                    ", maxConns=" + maxConns +
-                    ", proxyApi='" + proxyApi + '\'' +
-                    ", adxidMapping=" + adxidMapping +
-                    '}';
-        }
-
-        public String getProxyApi() {
-            return proxyApi;
-        }
-
-        public void setProxyApi(String proxyApi) {
-            this.proxyApi = proxyApi;
-        }
-
-        public Map<String, String> getAdxidMapping() {
-            return adxidMapping;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setAdxidMapping(Map<String, String> adxidMapping) {
-            this.adxidMapping = adxidMapping;
-            return this;
-        }
-
-        public String getJDBCDriver() {
-            return JDBCDriver;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setJDBCDriver(String JDBCDriver) {
-            this.JDBCDriver = JDBCDriver;
-            return this;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setUrl(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setUserId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public int getInitConns() {
-            return initConns;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setInitConns(int initConns) {
-            this.initConns = initConns;
-            return this;
-        }
-
-        public int getMaxConns() {
-            return maxConns;
-        }
-
-        @SuppressWarnings("unused")
-        public Mysql setMaxConns(int maxConns) {
-            this.maxConns = maxConns;
-            return this;
-        }
-    }
-
     @Override
     public String toString() {
         return "GlobalProperties{" +
@@ -315,7 +233,6 @@ public class GlobalProperties {
                 ", ctid=" + Arrays.toString(ctid) +
                 ", spotid=" + Arrays.toString(spotid) +
                 ", tag=" + Arrays.toString(tag) +
-                ", mysql=" + mysql +
                 '}';
     }
 
@@ -379,15 +296,6 @@ public class GlobalProperties {
 
     public GlobalProperties setTag(String[] tag) {
         this.tag = tag;
-        return this;
-    }
-
-    public Mysql getMysql() {
-        return mysql;
-    }
-
-    public GlobalProperties setMysql(Mysql mysql) {
-        this.mysql = mysql;
         return this;
     }
 }

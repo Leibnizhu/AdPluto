@@ -2,8 +2,8 @@ package com.turingdi.adpluto.service;
 
 import com.alibaba.fastjson.JSON;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.turingdi.adpluto.entity.GlobalProperties;
 import com.turingdi.adpluto.entity.Proxy;
+import com.turingdi.adpluto.entity.SystemConfig;
 import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
@@ -32,7 +32,7 @@ public class ProxyHolder {
 
     private void refreshProxysFromServer() {
         Log4jUtils.getLogger().info("开始抓取代理列表……");
-        String proxyApiUrl = GlobalProperties.getGlobalProps().getMysql().getProxyApi()+"//?types=0";
+        String proxyApiUrl = SystemConfig.getInstance().getProxyApi()+"//?types=0";
         String proxyJson = CommonUtils.sendGetRequest(proxyApiUrl);
         ParseProxyJson(proxyJson);
         Log4jUtils.getLogger().info("抓取代理列表完毕……");
@@ -75,7 +75,7 @@ public class ProxyHolder {
     private String deleteProxyFromServer(ProxyConfig proxyConfig) {
         //拼接调用删除接口的URL
         String proxyApiUrl = new StringBuilder()
-                .append(GlobalProperties.getGlobalProps().getMysql().getProxyApi())
+                .append(SystemConfig.getInstance().getProxyApi())
                 .append("/?delete=true&ip=")
                 .append(proxyConfig.getProxyHost())
                 .append("&port=")
