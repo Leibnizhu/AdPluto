@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /*
  * Created by leibniz on 16-11-29.
  */
-public class CheaterSetting {
+public class CheaterProperty {
     //任务队列最大长度
     private static final int QUEUE_MAX_LENGTH = 100;
     //任务队列
