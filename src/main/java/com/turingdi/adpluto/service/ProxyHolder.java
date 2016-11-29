@@ -27,6 +27,8 @@ public class ProxyHolder {
     }
 
     private ProxyHolder() {
+        proxyMap = new HashMap<>();
+        proxyMap.put(DIRECT_CONNECT, 0);
         refreshProxysFromServer();
     }
 
@@ -40,14 +42,14 @@ public class ProxyHolder {
 
     private void ParseProxyJson(String proxyJson) {
         List<Proxy> result = JSON.parseArray(proxyJson, Proxy.class);
-        proxyMap = new HashMap<>();
         for(Proxy proxy : result){
             proxyMap.put(new ProxyConfig(proxy.getIp(), proxy.getPort(),false), 0);
         }
     }
 
     ProxyConfig getRandomProxy() {
-        if (proxyMap.size() <= 0) {
+        //代理池为空，只剩下一个空代理
+        if (proxyMap.size() <= 1) {
             refreshProxysFromServer();
             return DIRECT_CONNECT;
         }

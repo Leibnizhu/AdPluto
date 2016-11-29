@@ -10,6 +10,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.turingdi.adpluto.entity.MissionConfig;
+import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
 public class URLAccessor {
@@ -24,7 +25,10 @@ public class URLAccessor {
     //WebClient使用次数统计
     private int useCount = 0;
 
-    public URLAccessor() {
+    private MissionConfig missionConfig;
+
+    public URLAccessor(MissionConfig missionConfig) {
+        this.missionConfig = missionConfig;
         newWebClient();
     }
 
@@ -39,10 +43,6 @@ public class URLAccessor {
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         //HTTP请求头设置假IP参数
         webClient.addRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
-//        webClient.addRequestHeader("X-Forwarded-For", CommonUtils.getRandomIPAddr());
-//        webClient.addRequestHeader("Proxy-Client-IP", CommonUtils.getRandomIPAddr());
-//        webClient.addRequestHeader("WL-Proxy-Client-IP", CommonUtils.getRandomIPAddr());
-//        webClient.addRequestHeader("HTTP-Client-IP", CommonUtils.getRandomIPAddr());
     }
 
     public boolean accessURL(String clickURL) {
@@ -50,7 +50,7 @@ public class URLAccessor {
         Random rand = new Random(System.currentTimeMillis());
         //按指定的比例，从Cookie存储对象中随机获取一个的旧的Cookie进行访问
         webClient.getCookieManager().clearCookies();
-        if (rand.nextFloat() > 1 / MissionConfig.getGlobalProps().getBasic().getAdvPVAdvUV()) {
+        if (rand.nextFloat() > 1 / missionConfig.getBasic().getAdvPVAdvUV()) {
             Set<Cookie> sendCookie = CookiesStorer.getInstance().getRandomCookieSet();
             if (null != sendCookie) {
                 for (Cookie cookie : sendCookie) {
@@ -86,9 +86,7 @@ public class URLAccessor {
     private boolean tryAccessURL(WebClient webClient, String clickURL) {
         try {
             //每次访问切换代理
-            ProxyConfig anonymityProxy = ProxyHolder.getInstance().getRandomProxy();
-            webClient.getOptions().setProxyConfig(anonymityProxy);
-            Log4jUtils.getLogger().info("正在使用代理" + anonymityProxy.getProxyHost() + ":" + anonymityProxy.getProxyPort() + "进行访问。");
+            changeProxy(webClient);
             //模拟浏览器打开一个目标网址
             HtmlPage page = webClient.getPage(clickURL);
             Log4jUtils.getLogger().info("打开的网页标题为：" + page.getTitleText());
@@ -104,5 +102,18 @@ public class URLAccessor {
             Log4jUtils.getLogger().error("访问" + clickURL + "时抛出异常，尝试重连......");
             return false;
         }
+    }
+
+    private void changeProxy(WebClient webClient) {
+        ProxyConfig anonymityProxy = ProxyHolder.getInstance().getRandomProxy();
+        if (null == anonymityProxy.getProxyHost()) {
+            //不使用代理的时候，增加IP伪造的HTTP头
+            webClient.addRequestHeader("X-Forwarded-For", CommonUtils.getRandomIPAddr());
+            webClient.addRequestHeader("Proxy-Client-IP", CommonUtils.getRandomIPAddr());
+            webClient.addRequestHeader("WL-Proxy-Client-IP", CommonUtils.getRandomIPAddr());
+            webClient.addRequestHeader("HTTP-Client-IP", CommonUtils.getRandomIPAddr());
+        }
+        webClient.getOptions().setProxyConfig(anonymityProxy);
+        Log4jUtils.getLogger().info("正在使用代理" + anonymityProxy.getProxyHost() + ":" + anonymityProxy.getProxyPort() + "进行访问。");
     }
 }
