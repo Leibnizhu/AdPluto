@@ -32,7 +32,7 @@ public class NettyRPCServer {
                             pipeline.addLast(new HttpRequestDecoder());
                             pipeline.addLast(new HttpObjectAggregator(4096));//整合http请求片段信息
                             pipeline.addLast(new JsonDecoder());
-                            pipeline.addLast(new MissionHandler());
+                            pipeline.addLast(new RPCMissionHandler());
                         }
                     });
             ChannelFuture cf = sbs.bind().sync();
