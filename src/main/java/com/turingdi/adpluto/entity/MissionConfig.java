@@ -179,7 +179,7 @@ public class MissionConfig {
 
     public static class Mission {
         private int type;//任务类型，1=开始新任务，2=按ID查询旧任务进度，3=按ID强制停止任务
-        private int id;//任务ID
+        private String id;//任务ID
 
         @Override
         public String toString() {
@@ -197,11 +197,11 @@ public class MissionConfig {
             this.type = type;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
     }
