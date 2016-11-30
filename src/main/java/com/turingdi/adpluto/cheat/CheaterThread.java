@@ -1,4 +1,4 @@
-package com.turingdi.adpluto.starter;
+package com.turingdi.adpluto.cheat;
 
 import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.RequestParams;

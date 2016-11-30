@@ -1,5 +1,6 @@
 package com.turingdi.adpluto.starter;
 
+import com.turingdi.adpluto.cheat.Cheater;
 import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.SystemConfig;
 import com.turingdi.adpluto.rpc.NettyRPCServer;
