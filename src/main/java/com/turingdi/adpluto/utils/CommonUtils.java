@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommonUtils {
     /**
@@ -118,5 +117,22 @@ public class CommonUtils {
             }
         }
         return sbuf.toString();
+    }
+
+    public static String getRandomID() {
+        return UUID.randomUUID().toString().replaceAll("-","");
+    }
+
+    static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
+
+    public static String unicodeDecode(String s) {
+        Matcher m = UNICODE_PATTERN.matcher(s);
+        StringBuffer sb = new StringBuffer(s.length());
+        while (m.find()) {
+            m.appendReplacement(sb,
+                    Character.toString((char) Integer.parseInt(m.group(1), 16)));
+        }
+        m.appendTail(sb);
+        return sb.toString();
     }
 }
