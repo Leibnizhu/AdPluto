@@ -1,10 +1,13 @@
-package com.turingdi.adpluto.starter;
+package com.turingdi.adpluto.cheat;
 
 import com.turingdi.adpluto.entity.CheaterProperty;
 import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.RequestParams;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 /*
  * Created by leibniz on 16-11-29.
  */
-class Cheater {
+public class Cheater {
     //线程池大小
     private static final int POOL_SIZE = 5;
     //线程池对象
@@ -20,36 +23,42 @@ class Cheater {
     //刷UV配置
     private MissionConfig config;
 
-    Cheater(MissionConfig config) {
+    public Cheater(MissionConfig config) {
         this.config = config;
     }
 
-    void startCheater() throws InterruptedException {
+    public void startCheater() throws InterruptedException {
         CheaterProperty cheatProps = new CheaterProperty();
         registerShutdownHook(cheatProps);//注册程序关闭监听钩子
         initThreadPool(cheatProps, config);//初始化连接池
         int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
-        int clkCount = 0;//统计当前执行了多少次广告主落地页的PV
         //遍历所有可能的宏替换排列组合
-        while (clkCount < totalPV) {
-            for (MissionConfig.Campaign camp : config.getCamp()) {
-                for (MissionConfig.Size size : config.getSize()) {
-                    for (String campid : camp.getCampid()) {
-                        for (String crtvPkgId : config.getCtid()) {
-                            for (String adzoneId : config.getSpotid()) {
-                                for (String tag : config.getTag()) {
-                                    for (String clickURL : config.getUrl()) {
-                                        RequestParams req = new RequestParams(clickURL, camp.getAdxid(), size, crtvPkgId, campid, adzoneId, tag);
-                                        //将任务压入任务队列
-                                        while(!cheatProps.getReqQueueStack().offer(req)){
-                                            Thread.sleep(1000);
-                                        }
-                                        //需要触发的点击次数
-                                        if (++clkCount >= totalPV) {
-                                            closeThreadPool(cheatProps);
-                                            return;
-                                        }
-                                    }
+        List<RequestParams> reqParamList = getReqParamsList();
+        for (int clkCount = 0; clkCount < totalPV; clkCount++) {
+            RequestParams req = reqParamList.get(clkCount%reqParamList.size());
+            //将任务压入任务队列
+            while (!cheatProps.getReqQueueStack().offer(req)) {
+                Thread.sleep(1000);
+            }
+            //需要触发的点击次数
+            if (++clkCount >= totalPV) {
+                closeThreadPool(cheatProps);
+                return;
+            }
+        }
+    }
+
+    //根据现有的多个条件，生成乱序的待访问请求参数
+    private List<RequestParams> getReqParamsList(){
+        List<RequestParams> result = new ArrayList<>();
+        for (MissionConfig.Campaign camp : config.getCamp()) {
+            for (MissionConfig.Size size : config.getSize()) {
+                for (String campid : camp.getCampid()) {
+                    for (String crtvPkgId : config.getCtid()) {
+                        for (String adzoneId : config.getSpotid()) {
+                            for (String tag : config.getTag()) {
+                                for (String clickURL : config.getUrl()) {
+                                    result.add(new RequestParams(clickURL, camp.getAdxid(), size, crtvPkgId, campid, adzoneId, tag));
                                 }
                             }
                         }
@@ -57,6 +66,8 @@ class Cheater {
                 }
             }
         }
+        Collections.shuffle(result);//打乱顺序
+        return result;
     }
 
     private void registerShutdownHook(CheaterProperty setting) {
