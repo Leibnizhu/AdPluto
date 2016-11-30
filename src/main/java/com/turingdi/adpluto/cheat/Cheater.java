@@ -22,30 +22,58 @@ public class Cheater {
     private ExecutorService threadPool;
     //刷UV配置
     private MissionConfig config;
+    //Cheater配置
+    private  CheaterProperty cheatProps;
+    //状态
+    enum CHEATER_STATUS {
+        ADDED, STARTED, ERROR, ENDED
+    }
+    private CHEATER_STATUS status;
 
-    public Cheater(MissionConfig config) {
-        this.config = config;
+    CHEATER_STATUS getStatus() {
+        return status;
     }
 
-    public void startCheater() throws InterruptedException {
-        CheaterProperty cheatProps = new CheaterProperty();
+    public Cheater(MissionConfig config) {
+        status = CHEATER_STATUS.ADDED;
+        this.config = config;
+        cheatProps = new CheaterProperty();
         registerShutdownHook(cheatProps);//注册程序关闭监听钩子
         initThreadPool(cheatProps, config);//初始化连接池
-        int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
-        //遍历所有可能的宏替换排列组合
-        List<RequestParams> reqParamList = getReqParamsList();
-        for (int clkCount = 0; clkCount < totalPV; clkCount++) {
-            RequestParams req = reqParamList.get(clkCount%reqParamList.size());
-            //将任务压入任务队列
-            while (!cheatProps.getReqQueueStack().offer(req)) {
-                Thread.sleep(1000);
+    }
+
+    void forceStop(){
+        threadPool.shutdownNow();
+        status = CHEATER_STATUS.ENDED;
+    }
+
+    public void start() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    status = CHEATER_STATUS.STARTED;
+                    int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
+                    //遍历所有可能的宏替换排列组合
+                    List<RequestParams> reqParamList = getReqParamsList();
+                    for (int clkCount = 0; clkCount < totalPV; clkCount++) {
+                        RequestParams req = reqParamList.get(clkCount % reqParamList.size());
+                        //将任务压入任务队列
+                        while (!cheatProps.getReqQueueStack().offer(req)) {
+                            Thread.sleep(1000);
+                        }
+                        //需要触发的点击次数
+                        if (++clkCount >= totalPV) {
+                            closeThreadPool(cheatProps);
+                            return;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    status = CHEATER_STATUS.ERROR;
+                    e.printStackTrace();
+                }
             }
-            //需要触发的点击次数
-            if (++clkCount >= totalPV) {
-                closeThreadPool(cheatProps);
-                return;
-            }
-        }
+        }).start();
     }
 
     //根据现有的多个条件，生成乱序的待访问请求参数
@@ -71,7 +99,7 @@ public class Cheater {
     }
 
     private void registerShutdownHook(CheaterProperty setting) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> Log4jUtils.getLogger().info("强制退出ing……失败的任务有(显示格式：访问失败任务的URL=失败次数)：\n" + setting.getFailedURL())));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Log4jUtils.getLogger().info("退出程序ing……失败的任务有(显示格式：访问失败任务的URL=失败次数)：\n" + setting.getFailedURL())));
     }
 
     private void initThreadPool(CheaterProperty cheatProps, MissionConfig config) {
@@ -87,6 +115,7 @@ public class Cheater {
             Log4jUtils.getLogger().info("等待线程池关闭...");
         }
         Log4jUtils.getLogger().info("失败的任务有：" + setting.getFailedURL());
+        status = CHEATER_STATUS.ENDED;
         Log4jUtils.getLogger().info("线程池已关闭，正在退出...");
     }
 }
