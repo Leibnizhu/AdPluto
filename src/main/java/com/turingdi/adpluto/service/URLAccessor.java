@@ -105,9 +105,16 @@ public class URLAccessor {
     }
 
     private void changeProxy(WebClient webClient) {
-        ProxyConfig anonymityProxy = ProxyHolder.getInstance().getRandomProxy();
+        String area = missionConfig.getBasic().getArea();
+        ProxyConfig anonymityProxy;
+        //根据任务中有否设定地区而选择不同的代理
+        if(null == area || area.length() == 0){
+            anonymityProxy = ProxyHolder.getInstance().getRandomProxy();
+        } else {
+            anonymityProxy = ProxyHolder.getInstance().getRandomProxy(area);
+        }
         if (null == anonymityProxy.getProxyHost()) {
-            //不使用代理的时候，增加IP伪造的HTTP头
+            //拿不到代理的时候，增加IP伪造的HTTP头
             webClient.addRequestHeader("X-Forwarded-For", CommonUtils.getRandomIPAddr());
             webClient.addRequestHeader("Proxy-Client-IP", CommonUtils.getRandomIPAddr());
             webClient.addRequestHeader("WL-Proxy-Client-IP", CommonUtils.getRandomIPAddr());
