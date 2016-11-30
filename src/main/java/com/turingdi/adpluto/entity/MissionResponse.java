@@ -17,6 +17,14 @@ public class MissionResponse {
         this.message = message;
     }
 
+    @Override
+    public String toString() {
+        return "MissionResponse{" +
+                "cheaterID='" + cheaterID + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
+
     public String getMessage() {
         return message;
     }
