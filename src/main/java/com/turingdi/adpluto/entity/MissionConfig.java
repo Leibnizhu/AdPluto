@@ -17,6 +17,7 @@ import com.turingdi.adpluto.utils.Log4jUtils;
 @SuppressWarnings("unused")
 public class MissionConfig {
     private Basic basic;// 基本配置
+    private Mission mission;//任务相关配置
     private String[] url;//要刷的广告主落地页，包括宏
     private Size[] size;// 尺寸
     private Campaign[] camp;// 渠道ID
@@ -56,7 +57,7 @@ public class MissionConfig {
         try {
             is = new BufferedInputStream(MissionConfig.class.getResourceAsStream("/config.json"));
             MissionConfig config = MissionConfig.parseFrom(is);
-            config.shuffle();//打乱配置
+            //config.shuffle();//打乱配置
             return config;
         } catch (IOException e) {
             Log4jUtils.getLogger().error("读取config.json配置文件时抛出IO异常", e);
@@ -93,6 +94,7 @@ public class MissionConfig {
         private double advPVAdvUV;// Adobe监测到的PV和UV的比值
         private double dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
         private double dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
+        private String area;//刷的地区，空为不限
 
         private double pvClick;
         private double pvImpl;
@@ -104,9 +106,18 @@ public class MissionConfig {
                     ", advPVAdvUV=" + advPVAdvUV +
                     ", dspClickAdvUV=" + dspClickAdvUV +
                     ", dspImpAdvUV=" + dspImpAdvUV +
+                    ", area='" + area + '\'' +
                     ", pvClick=" + pvClick +
                     ", pvImpl=" + pvImpl +
                     '}';
+        }
+
+        public String getArea() {
+            return area;
+        }
+
+        public void setArea(String area) {
+            this.area = area;
         }
 
         public double getPvClick() {
@@ -163,6 +174,35 @@ public class MissionConfig {
         public Basic setDspImpAdvUV(double dspImpAdvUV) {
             this.dspImpAdvUV = dspImpAdvUV;
             return this;
+        }
+    }
+
+    public static class Mission {
+        private int type;//任务类型，1=开始新任务，2=按ID查询旧任务进度，3=按ID强制停止任务
+        private int id;//任务ID
+
+        @Override
+        public String toString() {
+            return "Mission{" +
+                    "type=" + type +
+                    ", id=" + id +
+                    '}';
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
     }
 
@@ -245,6 +285,7 @@ public class MissionConfig {
     public String toString() {
         return "MissionConfig{" +
                 "basic=" + basic +
+                ", mission=" + mission +
                 ", url=" + Arrays.toString(url) +
                 ", size=" + Arrays.toString(size) +
                 ", camp=" + Arrays.toString(camp) +
@@ -260,6 +301,15 @@ public class MissionConfig {
 
     public MissionConfig setBasic(Basic basic) {
         this.basic = basic;
+        return this;
+    }
+
+    public Mission getMission() {
+        return mission;
+    }
+
+    public MissionConfig setMission(Mission mission) {
+        this.mission = mission;
         return this;
     }
 
