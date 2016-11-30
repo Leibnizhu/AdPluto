@@ -1,6 +1,7 @@
 package com.turingdi.adpluto.rpc;
 
-import com.turingdi.adpluto.entity.MissionConfig;
+import com.turingdi.adpluto.entity.MissionResponse;
+import com.turingdi.adpluto.utils.Log4jUtils;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -14,9 +15,9 @@ public class JsonEncoder extends ChannelOutboundHandlerAdapter {
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-		if (msg instanceof MissionConfig) {
-			//Log4jUtils.getLogger().info(msg);
-			byte[] out = msg.toString().getBytes();
+		if (msg instanceof MissionResponse) {
+			Log4jUtils.getLogger().debug(msg);
+			byte[] out = ((MissionResponse)msg).getJsonBytes();
 			ctx.writeAndFlush(new DefaultFullHttpResponse(HTTP_1_1, OK, Unpooled.wrappedBuffer(out)));
 		}
 		super.write(ctx, msg, promise);

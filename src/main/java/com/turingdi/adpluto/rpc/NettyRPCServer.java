@@ -29,11 +29,10 @@ public class NettyRPCServer {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpResponseEncoder());
                             pipeline.addLast(new JsonEncoder());
-
                             pipeline.addLast(new HttpRequestDecoder());
-                            pipeline.addLast(new HttpObjectAggregator(4096));
+                            pipeline.addLast(new HttpObjectAggregator(4096));//整合http请求片段信息
                             pipeline.addLast(new JsonDecoder());
-//                            pipeline.addLast(new BusinessHandler(bidQueueStack));
+                            pipeline.addLast(new MissionHandler());
                         }
                     });
             ChannelFuture cf = sbs.bind().sync();
