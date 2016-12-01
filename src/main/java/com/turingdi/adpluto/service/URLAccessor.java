@@ -1,17 +1,19 @@
 package com.turingdi.adpluto.service;
 
-import java.util.Random;
-import java.util.Set;
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
+
+import java.io.IOException;
+import java.util.Random;
+import java.util.Set;
 
 public class URLAccessor {
     //连接重试的次数
@@ -91,6 +93,11 @@ public class URLAccessor {
             HtmlPage page = webClient.getPage(clickURL);
             Log4jUtils.getLogger().info("打开的网页标题为：" + page.getTitleText());
 
+            //模拟点击广告
+            if(0 != missionConfig.getBasic().getImgClick()){
+                clickImgElement(page);
+            }
+
             // 取得cookie放入Cookie存储对象中
             Set<Cookie> receiveCookie = webClient.getCookieManager().getCookies();
             CookiesStorer.getInstance().addCookie(receiveCookie);
@@ -101,6 +108,22 @@ public class URLAccessor {
             }
             Log4jUtils.getLogger().error("访问" + clickURL + "时抛出异常，尝试重连......");
             return false;
+        }
+    }
+
+    private void clickImgElement(HtmlPage page) {
+        Random rand = new Random(System.currentTimeMillis());
+        MissionConfig.Basic basic = missionConfig.getBasic();
+        double clickRatio = basic.getImgClick()/((double)basic.getTotaluv())/basic.getAdvPVAdvUV();
+        if(rand.nextDouble() < clickRatio){
+            for(DomElement imgEle : page.getElementsByTagName("img")){
+                try {
+                    imgEle.click();
+                    Log4jUtils.getLogger().info("============>产生点击<============");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

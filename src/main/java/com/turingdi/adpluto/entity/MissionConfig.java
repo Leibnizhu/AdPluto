@@ -95,6 +95,7 @@ public class MissionConfig {
         private double dspClickAdvUV;//DSP端增加的点击与Adobe监测的UV的比值
         private double dspImpAdvUV; //DSP端增加的曝光量和Adobe监测UV的比值
         private String area;//刷的地区，空为不限
+        private int imgClick;//刷的点击次数，空或0表示不刷点击，目前针对电信，只点击页面中的img标签
 
         private double pvClick;
         private double pvImpl;
@@ -107,9 +108,18 @@ public class MissionConfig {
                     ", dspClickAdvUV=" + dspClickAdvUV +
                     ", dspImpAdvUV=" + dspImpAdvUV +
                     ", area='" + area + '\'' +
+                    ", imgClick=" + imgClick +
                     ", pvClick=" + pvClick +
                     ", pvImpl=" + pvImpl +
                     '}';
+        }
+
+        public int getImgClick() {
+            return imgClick;
+        }
+
+        public void setImgClick(int imgClick) {
+            this.imgClick = imgClick;
         }
 
         public String getArea() {
