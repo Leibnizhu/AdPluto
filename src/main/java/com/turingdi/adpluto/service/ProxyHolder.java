@@ -35,16 +35,41 @@ public class ProxyHolder {
         areaProxyMapMap = new HashMap<>();
         allProxyMap.put(DIRECT_CONNECT, 0);
         areaProxyMapMap.put("广东", new HashMap<ProxyConfig, Integer>(){{put(DIRECT_CONNECT, 0);}});
-        refreshProxysFromServer();
     }
 
-    private void refreshProxysFromServer() {
+    public void refreshProxysFromServer() {
         Log4jUtils.getLogger().info("开始抓取代理列表……");
-        String proxyApiUrl = SystemConfig.getInstance().getProxyApi() + "//?types=0";
-        String proxyJson = CommonUtils.sendGetRequest(proxyApiUrl);
-        ParseProxyJson(proxyJson);
+        refreshProxyFromPythonSpider();
+        refreshProxyFromPaidService();
         showProxyArea();
         Log4jUtils.getLogger().info("抓取代理列表完毕……");
+    }
+
+    private void refreshProxyFromPaidService() {
+        String paidApiUrl = "http://proxy.mimvp.com/api/fetch.php?orderid=860161130165132255&num=10&country=中国&isp=5&result_fields=1,2&result_fields=1,2,5";
+        String proxyResult = CommonUtils.sendGetRequest(paidApiUrl);
+        for(String line : proxyResult.split("\n")) {
+            String[] proxyParams = line.split("[,:]");
+            boolean isSock = proxyParams[2].toLowerCase().contains("sock");
+            ProxyConfig proxyObj = new ProxyConfig(proxyParams[0], Integer.parseInt(proxyParams[1]), isSock);
+            //加入到所有代理Map
+            allProxyMap.put(proxyObj, 0);
+            //加入到分地区的代理Map
+            String area;
+            if(proxyParams.length >= 5) {
+                area = proxyParams[4];
+            } else {
+                area = proxyParams[3];
+            }
+            Map<ProxyConfig, Integer> areaProxyMap = areaProxyMapMap.computeIfAbsent(area, k -> new HashMap<>());
+            areaProxyMap.put(proxyObj, 0);
+        }
+    }
+
+    private void refreshProxyFromPythonSpider() {
+        String proxyApiUrl = SystemConfig.getInstance().getSpiderProxyGetApi();
+        String proxyJson = CommonUtils.sendGetRequest(proxyApiUrl);
+        if(null != proxyJson && proxyJson.trim().length() > 0)ParseProxyJson(proxyJson);
     }
 
     private void showProxyArea() {
@@ -117,13 +142,8 @@ public class ProxyHolder {
 
     private String deleteProxyFromServer(ProxyConfig proxyConfig) {
         //拼接调用删除接口的URL
-        String proxyApiUrl = new StringBuilder()
-                .append(SystemConfig.getInstance().getProxyApi())
-                .append("/?delete=true&ip=")
-                .append(proxyConfig.getProxyHost())
-                .append("&port=")
-                .append(proxyConfig.getProxyPort())
-                .toString();
+        String originUrl = SystemConfig.getInstance().getSpiderProxyDelApi();
+        String proxyApiUrl = originUrl.replaceAll("<ip>", proxyConfig.getProxyHost()).replaceAll("<port>", String.valueOf(proxyConfig.getProxyPort()));
         return CommonUtils.sendGetRequest(proxyApiUrl);
     }
 }

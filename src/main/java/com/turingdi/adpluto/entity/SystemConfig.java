@@ -22,7 +22,9 @@ public class SystemConfig {
     private int serverPort;//作为服务器的时候使用的端口
     private int initConns;//连接池初始化连接数
     private int maxConns;//连接池最大连接数
-    private String proxyApi;//查询代理列表的API
+    private String spiderProxyGetApi;//自己的爬虫代理的获取API
+    private String spiderProxyDelApi;//自己的爬虫代理的删除API
+    private String paidProxyGetApi;//付费代理的获取API
     private Map<String, String> adxidMapping;//DSP业务平台中的ADX ID和扒数平台中ADX ID的映射关系
 
     private static SystemConfig INSTANCE;
@@ -58,7 +60,9 @@ public class SystemConfig {
                 ", serverPort=" + serverPort +
                 ", initConns=" + initConns +
                 ", maxConns=" + maxConns +
-                ", proxyApi='" + proxyApi + '\'' +
+                ", spiderProxyGetApi='" + spiderProxyGetApi + '\'' +
+                ", spiderProxyDelApi='" + spiderProxyDelApi + '\'' +
+                ", paidProxyGetApi='" + paidProxyGetApi + '\'' +
                 ", adxidMapping=" + adxidMapping +
                 '}';
     }
@@ -71,13 +75,28 @@ public class SystemConfig {
         this.serverPort = serverPort;
     }
 
-    public String getProxyApi() {
-        return proxyApi;
+    public String getSpiderProxyGetApi() {
+        return spiderProxyGetApi;
     }
 
-    @SuppressWarnings("unused")
-    public void setProxyApi(String proxyApi) {
-        this.proxyApi = proxyApi;
+    public void setSpiderProxyGetApi(String spiderProxyGetApi) {
+        this.spiderProxyGetApi = spiderProxyGetApi;
+    }
+
+    public String getSpiderProxyDelApi() {
+        return spiderProxyDelApi;
+    }
+
+    public void setSpiderProxyDelApi(String spiderProxyDelApi) {
+        this.spiderProxyDelApi = spiderProxyDelApi;
+    }
+
+    public String getPaidProxyGetApi() {
+        return paidProxyGetApi;
+    }
+
+    public void setPaidProxyGetApi(String paidProxyGetApi) {
+        this.paidProxyGetApi = paidProxyGetApi;
     }
 
     public Map<String, String> getAdxidMapping() {
