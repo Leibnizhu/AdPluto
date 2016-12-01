@@ -1,8 +1,10 @@
 package com.turingdi.adpluto.test;
 
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.turingdi.adpluto.cheat.MissionManager;
 import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.MissionResponse;
+import com.turingdi.adpluto.entity.SystemConfig;
 import org.junit.Test;
 
 /*
@@ -17,6 +19,7 @@ public class EntryTest {
         MissionConfig.Mission add = new MissionConfig.Mission();
         add.setId("1");
         add.setType(1);
+        assert config != null;
         config.setMission(add);
         MissionResponse resp = MissionManager.getInstance().addOneMission(config);
         System.out.println(resp);
@@ -37,5 +40,13 @@ public class EntryTest {
         config.setMission(check);
         System.out.println(MissionManager.getInstance().addOneMission(config));
         Thread.sleep(1000*30);
+    }
+
+    @Test
+    public void testRegax(){
+        ProxyConfig proxyConfig = new ProxyConfig("127.0.0.1",1234);
+        String originUrl = SystemConfig.getInstance().getSpiderProxyDelApi();
+        String proxyApiUrl = originUrl.replaceAll("<ip>", proxyConfig.getProxyHost()).replaceAll("<port>", String.valueOf(proxyConfig.getProxyPort()));
+        System.out.println(proxyApiUrl);
     }
 }
