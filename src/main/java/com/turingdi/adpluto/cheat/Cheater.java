@@ -24,9 +24,13 @@ public class Cheater {
     private MissionConfig config;
     //Cheater配置
     private  CheaterProperty cheatProps;
+    //Cheater ID
+    private String id;
+    //是否已展示失败信息
+    private boolean unShowFailURL = true;
     //状态
     enum CHEATER_STATUS {
-        ADDED, STARTED, ERROR, ENDED
+        ADDED, STARTED, ERROR, ENDING, ENDED
     }
     private CHEATER_STATUS status;
 
@@ -34,17 +38,26 @@ public class Cheater {
         return status;
     }
 
-    public Cheater(MissionConfig config) {
-        status = CHEATER_STATUS.ADDED;
+    public CheaterProperty getCheatProps() {
+        return cheatProps;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Cheater(MissionConfig config, String id) {
+        this.id = id;
+        this.status = CHEATER_STATUS.ADDED;
         this.config = config;
-        cheatProps = new CheaterProperty();
+        this.cheatProps = new CheaterProperty();
         registerShutdownHook(cheatProps);//注册程序关闭监听钩子
-        initThreadPool(cheatProps, config);//初始化连接池
+        initThreadPool();//初始化连接池
     }
 
     void forceStop(){
         threadPool.shutdownNow();
-        status = CHEATER_STATUS.ENDED;
+        status = CHEATER_STATUS.ENDING;
     }
 
     public void start() {
@@ -52,14 +65,13 @@ public class Cheater {
             try {
                 status = CHEATER_STATUS.STARTED;
                 int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
+                Log4jUtils.getLogger().info("ID=" + getId() + "。共计" + totalPV + "次访问任务");
                 //遍历所有可能的宏替换排列组合
                 List<RequestParams> reqParamList = getReqParamsList();
                 for (int clkCount = 0; clkCount < totalPV; clkCount++) {
                     RequestParams req = reqParamList.get(clkCount % reqParamList.size());
                     //将任务压入任务队列
-                    while (!cheatProps.getReqQueueStack().offer(req)) {
-                        Thread.sleep(1000);
-                    }
+                    threadPool.submit(new CheaterThread(this, config, req));
                 }
                 closeThreadPool(cheatProps);
             } catch (InterruptedException e) {
@@ -92,14 +104,11 @@ public class Cheater {
     }
 
     private void registerShutdownHook(CheaterProperty setting) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> Log4jUtils.getLogger().info("退出程序ing……失败的任务有(显示格式：访问失败任务的URL=失败次数)：\n" + setting.getFailedURL())));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {if(unShowFailURL)Log4jUtils.getLogger().info("正在退出……失败的任务有(显示格式：访问失败任务的URL=失败次数)：\n" + setting.getFailedURL());}));
     }
 
-    private void initThreadPool(CheaterProperty cheatProps, MissionConfig config) {
+    private void initThreadPool() {
         threadPool = Executors.newFixedThreadPool(POOL_SIZE);
-        for(int i = 0; i < POOL_SIZE; i++){
-            threadPool.submit(new CheaterThread(cheatProps, config));
-        }
     }
 
     private void closeThreadPool(CheaterProperty setting) throws InterruptedException {
@@ -107,8 +116,8 @@ public class Cheater {
         while(!threadPool.awaitTermination(10, TimeUnit.SECONDS)){
             Log4jUtils.getLogger().info("等待线程池关闭...");
         }
-        Log4jUtils.getLogger().info("失败的任务有：" + setting.getFailedURL());
+        Log4jUtils.getLogger().info("线程池已关闭，失败的任务有(显示格式：访问失败任务的URL=失败次数)：\n" + setting.getFailedURL());
+        unShowFailURL = false;
         status = CHEATER_STATUS.ENDED;
-        Log4jUtils.getLogger().info("线程池已关闭，正在退出...");
     }
 }

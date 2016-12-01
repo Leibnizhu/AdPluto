@@ -44,9 +44,9 @@ public class MissionManager {
 
     private MissionResponse newCheatMission(MissionConfig missionConfig) {
         if(checkMissionValid(missionConfig)){
-            Cheater cheater = new Cheater(missionConfig);
-            cheater.start();
             String cheaterID = CommonUtils.getRandomID();
+            Cheater cheater = new Cheater(missionConfig, cheaterID);
+            cheater.start();
             missionMap.put(cheaterID, cheater);
             return new MissionResponse(cheaterID, "Successfully Add a Mission");
         } else {
