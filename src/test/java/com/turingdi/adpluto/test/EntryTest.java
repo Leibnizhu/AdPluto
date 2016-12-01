@@ -29,7 +29,7 @@ public class EntryTest {
         check.setType(2);
         config.setMission(check);
         System.out.println(MissionManager.getInstance().addOneMission(config));
-        Thread.sleep(1000*120);
+        Thread.sleep(1000*60);
         //关闭任务
         MissionConfig.Mission shutdown = new MissionConfig.Mission();
         shutdown.setId(resp.getCheaterID());
@@ -39,7 +39,10 @@ public class EntryTest {
         //再查询
         config.setMission(check);
         System.out.println(MissionManager.getInstance().addOneMission(config));
-        Thread.sleep(1000*30);
+        Thread.sleep(1000*150);
+        //再查询
+        config.setMission(check);
+        System.out.println(MissionManager.getInstance().addOneMission(config));
     }
 
     @Test
