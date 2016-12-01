@@ -33,8 +33,6 @@ public class ProxyHolder {
     private ProxyHolder() {
         allProxyMap = new HashMap<>();
         areaProxyMapMap = new HashMap<>();
-        allProxyMap.put(DIRECT_CONNECT, 0);
-        areaProxyMapMap.put("广东", new HashMap<ProxyConfig, Integer>(){{put(DIRECT_CONNECT, 0);}});
     }
 
     public void refreshProxysFromServer() {
@@ -46,7 +44,7 @@ public class ProxyHolder {
     }
 
     private void refreshProxyFromPaidService() {
-        String paidApiUrl = "http://proxy.mimvp.com/api/fetch.php?orderid=860161130165132255&num=10&country=中国&isp=5&result_fields=1,2&result_fields=1,2,5";
+        String paidApiUrl = SystemConfig.getInstance().getPaidProxyGetApi();
         String proxyResult = CommonUtils.sendGetRequest(paidApiUrl);
         for(String line : proxyResult.split("\n")) {
             try {
@@ -118,8 +116,8 @@ public class ProxyHolder {
     }
 
     private ProxyConfig getRandomProxy(Map<ProxyConfig, Integer> proxyMap) {
-        //代理池为空，只剩下一个空代理
-        if (proxyMap.size() <= 1) {
+        //代理池为空
+        if (proxyMap.size() <= 0) {
             refreshProxysFromServer();
             return DIRECT_CONNECT;
         }
@@ -138,7 +136,7 @@ public class ProxyHolder {
         int failTime = allProxyMap.get(proxyConfig) + 1;
         allProxyMap.put(proxyConfig, failTime);
         if (failTime >= ALLOW_FAIL_TIMES) {
-            Log4jUtils.getLogger().info("============>代理" + proxyConfig.getProxyHost() + ":" + proxyConfig.getProxyPort() + "失败次数过多，停止使用<============");
+            Log4jUtils.getLogger().info("============>代理" + getProxyAddr(proxyConfig) + "失败次数过多，停止使用<============");
             allProxyMap.remove(proxyConfig);
             Log4jUtils.getLogger().info("============>从爬虫服务器删除代理返回结果：" + deleteProxyFromServer(proxyConfig) + "<============");
         }
@@ -149,5 +147,9 @@ public class ProxyHolder {
         String originUrl = SystemConfig.getInstance().getSpiderProxyDelApi();
         String proxyApiUrl = originUrl.replaceAll("<ip>", proxyConfig.getProxyHost()).replaceAll("<port>", String.valueOf(proxyConfig.getProxyPort()));
         return CommonUtils.sendGetRequest(proxyApiUrl);
+    }
+
+    static String getProxyAddr(ProxyConfig proxy) {
+        return proxy.getProxyHost() + ":" + proxy.getProxyPort();
     }
 }
