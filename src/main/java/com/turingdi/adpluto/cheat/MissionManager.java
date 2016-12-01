@@ -89,6 +89,6 @@ public class MissionManager {
     public static void initialize() {
         Log4jUtils.getLogger().info("已读取系统配置文件sys.json：" + SystemConfig.getInstance());//初始化系统基本配置
         MySQLUtils.initMySQLPool();//初始化MySQL连接池
-        ProxyHolder.getInstance().getClass();//初始化本地IP代理池
+        ProxyHolder.getInstance().refreshProxysFromServer();//初始化本地IP代理池
     }
 }
