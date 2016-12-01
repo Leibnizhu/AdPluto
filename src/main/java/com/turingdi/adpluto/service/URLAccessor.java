@@ -43,8 +43,10 @@ public class URLAccessor {
         webClient.getOptions().setCssEnabled(false);//不加载CSS，提高解析速度
         webClient.getOptions().setTimeout(35000);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
-        //HTTP请求头设置假IP参数
-        webClient.addRequestHeader("User-Agent","Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0");
+    }
+
+    public void close(){
+        webClient.close();
     }
 
     public boolean accessURL(String clickURL) {
@@ -61,16 +63,18 @@ public class URLAccessor {
             }
         }
         //按重试次数和访问成功的条件，确认继续访问还是退出
-        boolean result = false;
-        for (int i = 0; i < RETRY_TIMES && !result; i++) {
-            result = tryAccessURL(webClient, clickURL);
+        boolean success = false;
+        for (int i = 0; i < RETRY_TIMES && !success; i++) {
+            success = tryAccessURL(webClient, clickURL);
+            if(success) break;
             try {
                 Thread.sleep(RETRY_SLEEP * 1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                return false;
             }
         }
-        return result;
+        if(success)Log4jUtils.getLogger().error("使用代理" + ProxyHolder.getProxyAddr(webClient.getOptions().getProxyConfig()) +"访问" + clickURL + "成功......");
+        return success;
     }
 
     /**
@@ -106,7 +110,8 @@ public class URLAccessor {
             if(e.getMessage().contains("403 Forbid")){
                 ProxyHolder.getInstance().handleForbidden(webClient.getOptions().getProxyConfig());
             }
-            Log4jUtils.getLogger().error("访问" + clickURL + "时抛出异常，尝试重连......");
+            ProxyConfig curProxy = webClient.getOptions().getProxyConfig();
+            Log4jUtils.getLogger().error("使用代理" + ProxyHolder.getProxyAddr(curProxy) +"访问" + clickURL + "时抛出异常，尝试重连......");
             return false;
         }
     }
@@ -144,6 +149,6 @@ public class URLAccessor {
             webClient.addRequestHeader("HTTP-Client-IP", CommonUtils.getRandomIPAddr());
         }
         webClient.getOptions().setProxyConfig(anonymityProxy);
-        Log4jUtils.getLogger().info("正在使用代理" + anonymityProxy.getProxyHost() + ":" + anonymityProxy.getProxyPort() + "进行访问。");
+        Log4jUtils.getLogger().info("正在使用代理" + ProxyHolder.getProxyAddr(anonymityProxy) + "进行访问。");
     }
 }
