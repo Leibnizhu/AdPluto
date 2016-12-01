@@ -103,10 +103,10 @@ public class CommonUtils {
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while((line = in.readLine()) != null){
-                sbuf.append(line);
+                sbuf.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log4jUtils.getLogger().error("连接服务器'" + url + "'时发生错误：" + e.getMessage());
         } finally {
             if (null != in) {
                 try {
@@ -123,7 +123,7 @@ public class CommonUtils {
         return UUID.randomUUID().toString().replaceAll("-","");
     }
 
-    static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
+    private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
 
     public static String unicodeDecode(String s) {
         Matcher m = UNICODE_PATTERN.matcher(s);
