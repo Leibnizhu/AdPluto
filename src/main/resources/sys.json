@@ -6,7 +6,7 @@
     "password": "dHVnuA5nHGk",
     "spiderProxyGetApi":"http://127.0.0.1:8000/?types=0&area=电信",
     "spiderProxyDelApi":"http://127.0.0.1:8000/?delete=true&ip=<ip>&port=<port>",
-    "paidProxyGetApi":"http://proxy.mimvp.com/api/fetch.php?orderid=860161130165132255&num=10&country=中国&isp=5&result_fields=1,2&result_fields=1,2,5&anonymous=5",
+    "paidProxyGetApi":"http://proxy.mimvp.com/api/fetch.php?orderid=860161130165132255&num=10&country_group=1&http_type=1,2&anonymous=3,5&isp=5&result_fields=1,2,5",
     "serverPort":8999,
     "initConns": 10,
     "maxConns": 100,
