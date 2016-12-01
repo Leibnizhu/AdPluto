@@ -48,30 +48,23 @@ public class Cheater {
     }
 
     public void start() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    status = CHEATER_STATUS.STARTED;
-                    int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
-                    //遍历所有可能的宏替换排列组合
-                    List<RequestParams> reqParamList = getReqParamsList();
-                    for (int clkCount = 0; clkCount < totalPV; clkCount++) {
-                        RequestParams req = reqParamList.get(clkCount % reqParamList.size());
-                        //将任务压入任务队列
-                        while (!cheatProps.getReqQueueStack().offer(req)) {
-                            Thread.sleep(1000);
-                        }
-                        //需要触发的点击次数
-                        if (++clkCount >= totalPV) {
-                            closeThreadPool(cheatProps);
-                            return;
-                        }
+        new Thread(() -> {
+            try {
+                status = CHEATER_STATUS.STARTED;
+                int totalPV = (int) (config.getBasic().getTotaluv() * config.getBasic().getAdvPVAdvUV());
+                //遍历所有可能的宏替换排列组合
+                List<RequestParams> reqParamList = getReqParamsList();
+                for (int clkCount = 0; clkCount < totalPV; clkCount++) {
+                    RequestParams req = reqParamList.get(clkCount % reqParamList.size());
+                    //将任务压入任务队列
+                    while (!cheatProps.getReqQueueStack().offer(req)) {
+                        Thread.sleep(1000);
                     }
-                } catch (InterruptedException e) {
-                    status = CHEATER_STATUS.ERROR;
-                    e.printStackTrace();
                 }
+                closeThreadPool(cheatProps);
+            } catch (InterruptedException e) {
+                status = CHEATER_STATUS.ERROR;
+                e.printStackTrace();
             }
         }).start();
     }
