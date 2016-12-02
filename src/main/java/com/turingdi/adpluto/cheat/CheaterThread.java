@@ -52,7 +52,8 @@ public class CheaterThread implements Callable<String> {
                 Log4jUtils.getLogger().info("============>第" + curCount + "次任务失败<============");
             }
             urlAccessor.close();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log4jUtils.getLogger().error("发生错误" + e.getMessage());
         }
         Log4jUtils.getLogger().info("线程" + Thread.currentThread() + "处理完毕，即将关闭...");
         return "Success";
