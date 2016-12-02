@@ -19,6 +19,7 @@ public class MissionConfig {
     private Basic basic;// 基本配置
     private Mission mission;//任务相关配置
     private String[] url;//要刷的广告主落地页，包括宏
+    private String[] referer;//来源页
     private Size[] size;// 尺寸
     private Campaign[] camp;// 渠道ID
     private String[] ctid;// 创意包ID
@@ -118,32 +119,36 @@ public class MissionConfig {
             return imgClick;
         }
 
-        public void setImgClick(int imgClick) {
+        public Basic setImgClick(int imgClick) {
             this.imgClick = imgClick;
+            return this;
         }
 
         public String getArea() {
             return area;
         }
 
-        public void setArea(String area) {
+        public Basic setArea(String area) {
             this.area = area;
+            return this;
         }
 
         public double getPvClick() {
             return pvClick;
         }
 
-        public void setPvClick(double pvClick) {
+        public Basic setPvClick(double pvClick) {
             this.pvClick = pvClick;
+            return this;
         }
 
         public double getPvImpl() {
             return pvImpl;
         }
 
-        public void setPvImpl(double pvImpl) {
+        public Basic setPvImpl(double pvImpl) {
             this.pvImpl = pvImpl;
+            return this;
         }
 
         public int getTotaluv() {
@@ -203,16 +208,18 @@ public class MissionConfig {
             return type;
         }
 
-        public void setType(int type) {
+        public Mission setType(int type) {
             this.type = type;
+            return this;
         }
 
         public String getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public Mission setId(String id) {
             this.id = id;
+            return this;
         }
     }
 
@@ -307,6 +314,15 @@ public class MissionConfig {
 
     public Basic getBasic() {
         return basic;
+    }
+
+    public String[] getReferer() {
+        return referer;
+    }
+
+    public MissionConfig setReferer(String[] referer) {
+        this.referer = referer;
+        return this;
     }
 
     public MissionConfig setBasic(Basic basic) {
