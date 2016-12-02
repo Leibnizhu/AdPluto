@@ -43,13 +43,15 @@ public class CommonUtils {
 
     public static void microReplace(RequestParams req) {
         StringBuffer sb = new StringBuffer(req.getClickURL());
-        CommonUtils.replaceStringBuffer(sb, ADX_ID, req.getAdxId());
-        CommonUtils.replaceStringBuffer(sb, CAMP_ID, req.getCampid());
-        CommonUtils.replaceStringBuffer(sb, ADZONE_ID, req.getAdzoneId());
-        CommonUtils.replaceStringBuffer(sb, WIDTH, req.getSize().getWidth());
-        CommonUtils.replaceStringBuffer(sb, HEIGHT, req.getSize().getHeight());
-        CommonUtils.replaceStringBuffer(sb, CT_ID, req.getCrtvPkgId());
-        CommonUtils.replaceStringBuffer(sb, TAG_ID, req.getTag());
+        if(null != req.getAdxId()) replaceStringBuffer(sb, ADX_ID, req.getAdxId());
+        if(null != req.getCampid()) replaceStringBuffer(sb, CAMP_ID, req.getCampid());
+        if(null != req.getAdzoneId()) replaceStringBuffer(sb, ADZONE_ID, req.getAdzoneId());
+        if(null != req.getSize()){
+            if(null != req.getSize().getWidth()) replaceStringBuffer(sb, WIDTH, req.getSize().getWidth());
+            if(null != req.getSize().getHeight()) replaceStringBuffer(sb, HEIGHT, req.getSize().getHeight());
+        }
+        if(null != req.getCrtvPkgId()) replaceStringBuffer(sb, CT_ID, req.getCrtvPkgId());
+        if(null != req.getTag()) replaceStringBuffer(sb, TAG_ID, req.getTag());
         req.setClickURL(sb.toString());
     }
 

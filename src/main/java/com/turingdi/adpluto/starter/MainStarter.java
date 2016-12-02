@@ -23,8 +23,12 @@ public class MainStarter {
     private static void runCheatOnce() {
         Log4jUtils.getLogger().info("单次执行模式");
         MissionConfig jsonConfig= MissionConfig.parseFromDefaultFile();
-        Log4jUtils.getLogger().info("已读取任务配置文件config.json并打乱：" + jsonConfig);//初始化作弊基本配置
-        new Cheater(jsonConfig, "RunOnce").start();//启动作弊器
+        if(jsonConfig != null && jsonConfig.checkMissionValid()){
+            Log4jUtils.getLogger().info("已读取任务配置文件config.json并打乱：" + jsonConfig);
+            new Cheater(jsonConfig, "RunOnce").start();//启动作弊器
+        } else {
+            Log4jUtils.getLogger().error("已读取任务配置文件config.json，文件内容不全，请检查修复后重试");
+        }
     }
 
     private static void runCheatServer() {

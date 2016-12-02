@@ -43,7 +43,7 @@ public class MissionManager {
     }
 
     private MissionResponse newCheatMission(MissionConfig missionConfig) {
-        if(checkMissionValid(missionConfig)){
+        if(missionConfig.checkMissionValid()){
             String cheaterID = CommonUtils.getRandomID();
             Cheater cheater = new Cheater(missionConfig, cheaterID);
             cheater.start();
@@ -52,18 +52,6 @@ public class MissionManager {
         } else {
             return new MissionResponse("", "Unvalid mission content, lack of some information!");
         }
-    }
-
-    private boolean checkMissionValid(MissionConfig mission) {
-        boolean valid = mission.getUrl().length > 0;
-        valid &= mission.getCtid().length > 0;
-        valid &= mission.getSpotid().length > 0;
-        valid &= mission.getTag().length > 0;
-        valid &= mission.getSize().length > 0;
-        if(valid) for(MissionConfig.Size size : mission.getSize()) valid &= size.getHeight() != null && size.getWidth() != null && size.getHeight().length() > 0 && size.getWidth().length() > 0;
-        valid &= mission.getCamp().length > 0;
-        if(valid) for(MissionConfig.Campaign camp : mission.getCamp()) valid &= camp.getAdxid().length() > 0 && camp.getCampid().length > 0;
-        return valid;
     }
 
     private MissionResponse checkMissionStatus(MissionConfig missionConfig) {

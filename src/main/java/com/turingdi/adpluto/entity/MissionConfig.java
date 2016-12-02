@@ -28,6 +28,17 @@ public class MissionConfig {
 
     public MissionConfig(){}
 
+    public boolean checkMissionValid() {
+        boolean valid = this.getBasic() != null;
+        valid &= this.getUrl().length > 0;
+        valid &= this.getReferer().length > 0;
+        if(null == this.getCamp()) this.setCamp(new Campaign[]{new Campaign().setCampid(new String[]{""})});
+        if(null == this.getSize()) this.setSize(new Size[]{new Size()});
+        if(null == this.getCtid()) this.setCtid(new String[]{""});
+        if(null == this.getSpotid()) this.setSpotid(new String[]{""});
+        if(null == this.getTag()) this.setTag(new String[]{""});
+        return valid;
+    }
 
     public static MissionConfig parseFrom(String json){
         MissionConfig result = JSON.parseObject(json, MissionConfig.class);
