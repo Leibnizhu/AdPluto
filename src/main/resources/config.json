@@ -1,13 +1,13 @@
 {
   "basic": {
     //刷的地区，空为不限
-    //"area":"广东",
+    //"area":"山东",
     //刷的点击次数，不填或填0表示不刷点击，目前针对电信，只点击页面中的img标签
-    "imgClick":10,
+    "imgClick":50,
     //需要投放的总UV数（广告主监测到的）
     "totaluv": 100,
     //Adobe监测到的PV和UV的比值
-    "advPVAdvUV": 1.5,
+    "advPVAdvUV": 1.1,
     //DSP端增加的点击与Adobe监测的UV的比值
     "dspClickAdvUV": 1.6,
     //DSP端增加的曝光量和Adobe监测UV的比值
@@ -16,6 +16,10 @@
     //会在Adobe上总共刷100个UV，100*1.5=150个PV
     //在我们DSP上刷100×1.6=160个点击，100*700=70000个展示
   },
+  "referer":[
+    //产生url字段的访问的来源页
+    "http://www.baidu.com"
+  ],
   "url": [
     //要刷的广告主落地页，包括宏
     "http://www.turing.click/test/index.htm"
