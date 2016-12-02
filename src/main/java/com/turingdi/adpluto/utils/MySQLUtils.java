@@ -11,17 +11,19 @@ public class MySQLUtils {
     private static ComboPooledDataSource cpds;
 
     public static void initMySQLPool() {
-        cpds = new ComboPooledDataSource();
-        try {
-            SystemConfig sysConfig = SystemConfig.getInstance();
-            cpds.setDriverClass(sysConfig.getJDBCDriver());
-            cpds.setJdbcUrl(sysConfig.getUrl());
-            cpds.setUser(sysConfig.getUserId());
-            cpds.setPassword(sysConfig.getPassword());
-            cpds.setInitialPoolSize(sysConfig.getInitConns());
-            cpds.setMaxPoolSize(sysConfig.getMaxConns());
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
+        if(null != cpds) {
+            cpds = new ComboPooledDataSource();
+            try {
+                SystemConfig sysConfig = SystemConfig.getInstance();
+                cpds.setDriverClass(sysConfig.getJDBCDriver());
+                cpds.setJdbcUrl(sysConfig.getUrl());
+                cpds.setUser(sysConfig.getUserId());
+                cpds.setPassword(sysConfig.getPassword());
+                cpds.setInitialPoolSize(sysConfig.getInitConns());
+                cpds.setMaxPoolSize(sysConfig.getMaxConns());
+            } catch (PropertyVetoException e) {
+                e.printStackTrace();
+            }
         }
     }
 
