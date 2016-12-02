@@ -166,14 +166,13 @@ public class URLAccessor {
         webClient.getOptions().setTimeout(30*1000);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.addRequestHeader("Accept", "*/*");
-        webClient.addRequestHeader("Connection", "keep-alive");
     }
 
     private String getRandomUserAgent() {
         return USER_AGENT[new Random(System.currentTimeMillis()).nextInt(USER_AGENT.length)];
     }
 
-    public String getRandomReferer() {
+    private String getRandomReferer() {
         String[] referers = missionConfig.getReferer();
         return referers[new Random(System.currentTimeMillis()).nextInt(referers.length)];
     }
