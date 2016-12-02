@@ -1,0 +1,40 @@
+Hypertext Transfer Protocol
+    GET http://www.turing.click/test/index.htm HTTP/1.1\r\n
+        [Expert Info (Chat/Sequence): GET http://www.turing.click/test/index.htm HTTP/1.1\r\n]
+            [GET http://www.turing.click/test/index.htm HTTP/1.1\r\n]
+            [Severity level: Chat]
+            [Group: Sequence]
+        Request Method: GET
+        Request URI: http://www.turing.click/test/index.htm
+        Request Version: HTTP/1.1
+    Host: www.turing.click\r\n
+    Connection: keep-alive\r\n
+    Accept-Encoding: gzip, deflate\r\n
+    Accept: */*\r\n
+    User-Agent: python-requests/2.12.2\r\n
+    \r\n
+    [Full request URI: http://www.turing.click/test/index.htm]
+    [HTTP request 1/1]
+    [Response in frame: 368024]
+
+
+	
+Hypertext Transfer Protocol
+    GET http://www.turing.click/test/index.htm HTTP/1.1\r\n
+        [Expert Info (Chat/Sequence): GET http://www.turing.click/test/index.htm HTTP/1.1\r\n]
+            [GET http://www.turing.click/test/index.htm HTTP/1.1\r\n]
+            [Severity level: Chat]
+            [Group: Sequence]
+        Request Method: GET
+        Request URI: http://www.turing.click/test/index.htm
+        Request Version: HTTP/1.1
+    Host: www.turing.click\r\n
+    User-Agent: python-requests/2.12.2\r\n
+    Accept: */*\r\n
+    Accept-Language: en-US\r\n
+    Accept-Encoding: gzip, deflate\r\n
+    Proxy-Connection: close\r\n
+    \r\n
+    [Full request URI: http://www.turing.click/test/index.htm]
+    [HTTP request 1/1]
+
