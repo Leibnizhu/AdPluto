@@ -7,6 +7,7 @@ import com.turingdi.adpluto.entity.SystemConfig;
 import com.turingdi.adpluto.utils.CommonUtils;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.regex.Pattern;
  * Created by leibniz on 16-11-25.
  */
 public class ProxyHolder {
-    private static final int ALLOW_FAIL_TIMES = 5;
+    private static final int ALLOW_FAIL_TIMES = 2;
     private static final ProxyConfig DIRECT_CONNECT = new ProxyConfig();//默认的直接连接的代理
     private static final Pattern PROVINCE_PATTERN = Pattern.compile("北京|天津|上海|重庆|河北|山西|辽宁|吉林|黑龙江|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|台湾|内蒙古|广西|西藏|宁夏|新疆|香港|澳门");
     private static ProxyHolder INSTANCE = new ProxyHolder();
@@ -35,22 +36,66 @@ public class ProxyHolder {
         areaProxyMapMap = new HashMap<>();
     }
 
-    public void refreshProxysFromServer() {
+    public synchronized void refreshProxysFromServer() {
         Log4jUtils.getLogger().info("开始抓取代理列表……");
-        refreshProxyFromPythonSpider();
-        refreshProxyFromPaidService();
+        //refreshProxyFromPythonSpider();
+        //refreshProxyFromMipuService();
+        refreshProxyFromKuaidailiService();
         showProxyArea();
         Log4jUtils.getLogger().info("抓取代理列表完毕……");
     }
 
-    private void refreshProxyFromPaidService() {
+    private void refreshProxyFromKuaidailiService() {
+        refreshProxyFromKuaidailiService("中国");
+    }
+
+    private void refreshProxyFromKuaidailiService(String area) {
+        try {
+            //按API要求3秒内只能抓取一次
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String encodedArea = URLEncoder.encode(area);
+        String apiUrl = "http://dev.kuaidaili.com/api/getproxy/?orderid=998064523409040&num=100&carrier=2&protocol=1&method=1&an_an=1&an_ha=1&f_loc=1&sep=2&sort=1&quality=1&area=" + encodedArea;
+        String proxyResult = CommonUtils.sendGetRequest(apiUrl);
+        for(String line : proxyResult.split("\n")) {
+            try {
+                String[] proxyParams = line.split("[,:]");
+                Proxy proxyObj = new Proxy(new ProxyConfig(proxyParams[0], Integer.parseInt(proxyParams[1]), false));
+                //加入到所有代理Map
+                allProxyMap.put(proxyObj, 0);
+                //加入到分地区的代理Map
+                String province;
+                Matcher match = PROVINCE_PATTERN.matcher(proxyParams[2]);
+                if (match.find()) {
+                    //匹配到省份
+                    province = match.group(0);
+                } else {
+                    province = "未知";
+                }
+                Map<ProxyConfig, Integer> areaProxyMap = areaProxyMapMap.computeIfAbsent(province, k -> new HashMap<>());
+                areaProxyMap.put(proxyObj, 0);
+            } catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
+                Log4jUtils.getLogger().error(line);
+            }
+        }
+    }
+
+    private void refreshProxyFromMipuService() {
+        try {
+            //按API要求3秒内只能抓取一次
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         String paidApiUrl = SystemConfig.getInstance().getPaidProxyGetApi();
         String proxyResult = CommonUtils.sendGetRequest(paidApiUrl);
         for(String line : proxyResult.split("\n")) {
             try {
                 String[] proxyParams = line.split("[,:]");
                 boolean isSock = proxyParams[2].toLowerCase().contains("sock");
-                ProxyConfig proxyObj = new ProxyConfig(proxyParams[0], Integer.parseInt(proxyParams[1]), isSock);
+                Proxy proxyObj = new Proxy(new ProxyConfig(proxyParams[0], Integer.parseInt(proxyParams[1]), isSock));
                 //加入到所有代理Map
                 allProxyMap.put(proxyObj, 0);
                 //加入到分地区的代理Map
@@ -62,7 +107,7 @@ public class ProxyHolder {
                 }
                 Map<ProxyConfig, Integer> areaProxyMap = areaProxyMapMap.computeIfAbsent(area, k -> new HashMap<>());
                 areaProxyMap.put(proxyObj, 0);
-            } catch(ArrayIndexOutOfBoundsException e){
+            } catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
                 Log4jUtils.getLogger().error(line);
             }
         }
@@ -82,9 +127,9 @@ public class ProxyHolder {
     private void ParseProxyJson(String proxyJson) {
         List<Proxy> result = JSON.parseArray(proxyJson, Proxy.class);
         for (Proxy proxy : result) {
+            proxy.initSuper();
             //加入到所有代理Map
-            ProxyConfig proxyObj = new ProxyConfig(proxy.getIp(), proxy.getPort(), false);
-            allProxyMap.put(proxyObj, 0);
+            allProxyMap.put(proxy, 0);
             //设置完整地区信息
             String area = CommonUtils.unicodeDecode(proxy.getArea());
             proxy.setArea(area);
@@ -103,24 +148,25 @@ public class ProxyHolder {
             }
             //加入到分地区的代理Map
             Map<ProxyConfig, Integer> areaProxyMap = areaProxyMapMap.computeIfAbsent(province, k -> new HashMap<>());
-            areaProxyMap.put(proxyObj, 0);
+            areaProxyMap.put(proxy, 0);
         }
     }
 
-    ProxyConfig getRandomProxy() {
+    synchronized ProxyConfig getRandomProxy() {
         return getRandomProxy(allProxyMap);
     }
 
-    ProxyConfig getRandomProxy(String area) {
-        return getRandomProxy(areaProxyMapMap.get(area));
+    synchronized ProxyConfig getRandomProxy(String area) {
+        refreshProxyFromKuaidailiService(area);
+        Map<ProxyConfig, Integer> areaProxyMap = areaProxyMapMap.get(area);
+        if(null == areaProxyMap) refreshProxysFromServer();
+        return getRandomProxy(areaProxyMap);
     }
 
     private ProxyConfig getRandomProxy(Map<ProxyConfig, Integer> proxyMap) {
         //代理池为空
-        if (proxyMap.size() <= 0) {
-            refreshProxysFromServer();
-            return DIRECT_CONNECT;
-        }
+        if (proxyMap.size() <= 3) refreshProxysFromServer();
+        if(proxyMap.size() == 0) return DIRECT_CONNECT;
         int randIndex = new Random(System.currentTimeMillis()).nextInt(proxyMap.size());
         int i = 0;
         for (ProxyConfig proxy : proxyMap.keySet()) {
