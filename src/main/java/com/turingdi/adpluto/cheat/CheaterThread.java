@@ -4,12 +4,12 @@ import com.turingdi.adpluto.entity.MissionConfig;
 import com.turingdi.adpluto.entity.RequestParams;
 import com.turingdi.adpluto.entity.CheaterProperty;
 import com.turingdi.adpluto.service.DatabaseAccessor;
+import com.turingdi.adpluto.service.HtmlUnitURLAccessor;
 import com.turingdi.adpluto.service.URLAccessor;
 import com.turingdi.adpluto.utils.Log4jUtils;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /*
  * Created by leibniz on 16-11-29.
@@ -24,7 +24,7 @@ public class CheaterThread implements Callable<String> {
         this.cheatProps = cheater.getCheatProps();
         this.missionConfig = missionConfig;
         this.req = req;
-        urlAccessor = new URLAccessor(missionConfig);
+        urlAccessor = new HtmlUnitURLAccessor(missionConfig);
     }
 
     @Override
