@@ -33,7 +33,7 @@ public class HtmlUnitURLAccessor implements URLAccessor {
 
     private void newWebClient() {
         //创建一个CHROME浏览器Client
-        webClient = new WebClient(BrowserVersion.FIREFOX_45);
+        webClient = new WebClient(BrowserVersion.CHROME);
         //设置webClient的相关参数
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
         webClient.getOptions().setJavaScriptEnabled(true);//必须加载JS，保证监控能够被执行

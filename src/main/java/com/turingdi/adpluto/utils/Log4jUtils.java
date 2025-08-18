@@ -1,7 +1,8 @@
 package com.turingdi.adpluto.utils;
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Log4j 相关的工具类
@@ -9,7 +10,7 @@ import org.apache.log4j.Logger;
  * @author leibniz
  */
 public class Log4jUtils {
-    private final static Logger logger = Logger.getLogger(Log4jUtils.class);
+    private final static Logger logger = LogManager.getLogger(Log4jUtils.class);
 
     /**
      * 获取Logger静态变量
